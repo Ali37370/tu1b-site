@@ -103,9 +103,9 @@ button.chip:hover{border-color:var(--gold)}
 .rank{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 .rank li{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
 .rank .n{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;font-weight:700;background:var(--surface2);font-size:16px}
-.rank li:nth-child(1) .n{background:#e2bd72;color:#1d1608}
-.rank li:nth-child(2) .n{background:#cfd3da;color:#1a1b1e}
-.rank li:nth-child(3) .n{background:#c98a55;color:#1f1206}
+.rank li.r1 .n{background:#e2bd72;color:#1d1608}
+.rank li.r2 .n{background:#cfd3da;color:#1a1b1e}
+.rank li.r3 .n{background:#c98a55;color:#1f1206}
 .rank .u{flex:1;min-width:0;overflow-wrap:anywhere;text-align:right;font-weight:600}
 .rank .c{color:var(--muted);font-size:15px;white-space:nowrap}
 .rank li.me{border-color:var(--gold);background:var(--surface2)}
@@ -211,6 +211,33 @@ body.has-admin footer{padding-bottom:110px}
   .board .thumb{max-width:220px}
   .stat b{font-size:28px}
 }
+
+/* ---------- wide screens: two-column composition ---------- */
+.brand{display:none}
+@media (min-width:1000px){
+  body{font-size:18px}
+  .wrap{max-width:1220px}
+  .tabs .wrap{align-items:center;padding-block:12px}
+  .brand{display:block;margin-inline-end:auto;font-family:var(--display);font-weight:700;font-size:26px;letter-spacing:.06em;direction:ltr;color:var(--gold);text-decoration:none}
+  .tabs a.find{order:9}
+  .top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:56px;align-items:center;padding-block:48px 24px}
+  .top .hero{align-items:flex-start;text-align:right;padding:0}
+  .top .hero .avatar{width:168px;height:168px}
+  .top .hero h1{font-size:64px}
+  .top .hero .who{max-width:40ch;font-size:19px}
+  .top .status,.top .account,.top .actions{justify-content:flex-start}
+  .top .actions .btn.line{display:none}
+  .top #find{padding:0}
+  .top #find .card{padding:28px}
+  .grid{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px}
+  .duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start}
+  .duo .side{display:grid;gap:0}
+  .duo .links{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rank li{padding:8px 14px}
+  section.sec{padding-block:36px}
+  h2{font-size:32px}
+  .panel{padding:24px}
+}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 </style>
 
@@ -219,6 +246,7 @@ body.has-admin footer{padding-bottom:110px}
 
 <div dir="rtl">
 <nav class="tabs" aria-label="أقسام الموقع"><div class="wrap">
+  <a class="brand" href="#">TU1B</a>
   <a class="find" href="#find">وين اسمي؟</a>
   <a href="#album">التحضير</a>
   <a href="#honor">لوحة الشرف</a>
@@ -227,6 +255,7 @@ body.has-admin footer{padding-bottom:110px}
 </div></nav>
 
 <main class="wrap">
+  <div class="top">
   <header class="hero">
     <div class="avatar"><img src="portrait.jpg" alt="البراء (تيوب)" width="900" height="900"></div>
     <h1>TU1B</h1>
@@ -238,6 +267,22 @@ body.has-admin footer{padding-bottom:110px}
       <a class="btn line" href="#find">وين اسمي في التحضير؟</a>
     </div>
   </header>
+
+
+  <section class="sec" id="find">
+    <h2>وين اسمي؟</h2>
+    <p class="lead">اكتب يوزرك في كيك، ونطلع لك كم بث حضرت، وترتيبك، والسبورات اللي فيها اسمك.</p>
+    <div class="card">
+      <form class="findform" id="findForm" autocomplete="off">
+        <label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">يوزرك في كيك</label>
+        <input id="q" type="text" list="allNames" placeholder="يوزرك في كيك، مثلاً ZINA_MT" spellcheck="false" autocapitalize="off">
+        <button class="btn gold" type="submit">ابحث</button>
+      </form>
+      <div class="result" id="result" aria-live="polite"></div>
+    </div>
+    <div class="card join" id="joinCard" hidden></div>
+  </section>
+  </div>
 
   <section class="sec" id="adminSec" hidden aria-label="لوحة المدير">
     <div class="panel">
@@ -276,32 +321,20 @@ body.has-admin footer{padding-bottom:110px}
     </div>
   </section>
 
-  <section class="sec" id="find">
-    <h2>وين اسمي؟</h2>
-    <p class="lead">اكتب يوزرك في كيك، ونطلع لك كم بث حضرت، وترتيبك، والسبورات اللي فيها اسمك.</p>
-    <div class="card">
-      <form class="findform" id="findForm" autocomplete="off">
-        <label for="q" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">يوزرك في كيك</label>
-        <input id="q" type="text" list="allNames" placeholder="يوزرك في كيك، مثلاً ZINA_MT" spellcheck="false" autocapitalize="off">
-        <button class="btn gold" type="submit">ابحث</button>
-      </form>
-      <div class="result" id="result" aria-live="polite"></div>
-    </div>
-    <div class="card join" id="joinCard" hidden></div>
-  </section>
-
   <section class="sec" id="album">
     <h2>سبورات التحضير</h2>
     <p class="lead" id="albumLead">اضغط على أي سبورة عشان تكبر وتشوف الأسماء.</p>
     <div class="grid" id="grid"></div>
   </section>
 
+  <div class="duo">
   <section class="sec" id="honor">
     <h2>لوحة الشرف</h2>
     <p class="lead">أكثر الناس حضوراً للبثوث.</p>
     <ol class="rank" id="rank"></ol>
   </section>
 
+  <div class="side">
   <section class="sec" id="schedule">
     <h2>جدول البث</h2>
     <p class="lead">المواعيد بتوقيت السعودية.</p>
@@ -321,6 +354,8 @@ body.has-admin footer{padding-bottom:110px}
       <a class="lnk" style="--c:#e2bd72" href="https://botrix.live/k/tu1b/shop" target="_blank" rel="noopener"><i>$</i><span><small>متجر النقاط · اكتب !shop</small><b>BotRix</b></span></a>
     </div>
   </section>
+  </div>
+  </div>
 
   <footer>تيوب · البراء · شكراً لكل اللي حضروا</footer>
 </main>
@@ -421,7 +456,7 @@ function renderGrid(){
 function renderRank(){
   const ol=$('rank');ol.textContent='';const list=stats();const k=key(ME);
   if(!list.length){ol.appendChild(el('li','empty','لوحة الشرف تطلع أول ما تنضاف أسماء على السبورات.'));return}
-  const row=e=>{const li=el('li',key(e.name)===k?'me':'');li.append(el('span','n',e.rank),nameEl('span','u',e.name),el('span','c',times(e.count)));return li};
+  const row=e=>{const li=el('li',(key(e.name)===k?'me ':'')+(e.rank<=3?'r'+e.rank:''));li.append(el('span','n',e.rank),nameEl('span','u',e.name),el('span','c',times(e.count)));return li};
   list.slice(0,10).forEach(e=>ol.appendChild(row(e)));
   const me=list.find(e=>key(e.name)===k);
   if(me&&list.indexOf(me)>=10){ol.appendChild(el('li','gap','…'));ol.appendChild(row(me))}
