@@ -237,6 +237,22 @@ body.has-admin footer{padding-bottom:110px}
   .stat b{font-size:28px}
 }
 
+
+/* subscribers */
+.subcard{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;align-items:center;margin-bottom:16px}
+.subtext h3{margin:0 0 6px;font-size:22px}
+.subtext p{margin:0 0 12px;color:var(--muted)}
+.subtext .subme{color:var(--gold);font-weight:700}
+.emotes{display:flex;flex-wrap:wrap;gap:12px}
+.emote{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px;width:84px}
+.emote img{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 10px #0008)}
+.emote figcaption{font-size:12px;color:var(--muted);direction:ltr;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.emote.ed{position:relative;padding:6px;border-radius:12px;background:var(--surface2);border:1px solid var(--line)}
+.emote.ed button{position:absolute;top:-8px;left:-8px;width:24px;height:24px;border-radius:50%;border:0;background:var(--red);color:#fff;cursor:pointer;font-size:12px}
+.sublist{display:flex;flex-wrap:wrap;gap:8px}
+.chip.sub{border-color:#53fc1855}
+@media (min-width:1000px){.subcard{grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:28px}.emotes{justify-content:flex-end}}
+
 /* ---------- wide screens: two-column composition ---------- */
 .brand{display:none}
 @media (min-width:1000px){
@@ -276,6 +292,7 @@ body.has-admin footer{padding-bottom:110px}
   <a class="brand" href="#">TU1B</a>
   <a class="find" href="#find">وين اسمي؟</a>
   <a href="#album">التحضير</a>
+  <a href="#subs">المشتركين</a>
   <a href="#honor">لوحة الشرف</a>
   <a href="#schedule">الجدول</a>
   <a href="#links">الحسابات</a>
@@ -341,6 +358,22 @@ body.has-admin footer{padding-bottom:110px}
         <datalist id="allNames"></datalist>
         <div class="boards" id="boardsEdit" style="margin-top:12px"></div>
       </div>
+      <div>
+        <h3>المشتركين في كيك</h3>
+        <p class="note" style="margin-top:0">أضف يوزرات المشتركين. تقدر تلصق أكثر من اسم مرة وحدة.</p>
+        <form class="addname" id="subAdd" style="margin:10px 0">
+          <label for="subName" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">يوزر المشترك</label>
+          <input id="subName" list="allNames" placeholder="يوزر المشترك في كيك" spellcheck="false" autocapitalize="off">
+          <button class="btn gold" type="submit">إضافة</button>
+        </form>
+        <div class="chips" id="subsEdit" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+        <div class="row" style="justify-content:space-between;margin-top:16px">
+          <h3 style="margin:0">ايموتات الاشتراك</h3>
+          <label class="btn line upl" for="emoteFile">+ ارفع ايموت</label>
+          <input id="emoteFile" type="file" accept="image/png,image/webp,image/gif,image/jpeg" multiple hidden>
+        </div>
+        <div class="emotes" id="emotesEdit" style="margin-top:10px"></div>
+      </div>
       <div class="savebar">
         <span class="msg" id="saveMsg" role="status">كل شي محفوظ.</span>
         <button class="btn gold" id="saveBtn" type="button" disabled>حفظ ونشر</button>
@@ -352,6 +385,24 @@ body.has-admin footer{padding-bottom:110px}
     <h2>سبورات التحضير</h2>
     <p class="lead" id="albumLead">اضغط على أي سبورة عشان تكبر وتشوف الأسماء.</p>
     <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="sec" id="subs">
+    <h2>المشتركين في كيك</h2>
+    <p class="lead">شكراً لكل اللي دعموا تيوب باشتراك. <span id="subsCount"></span></p>
+    <div class="card subcard">
+      <div class="subtext">
+        <h3>اشترك في قناة تيوب</h3>
+        <p>اشتراكك يدعم تيوب، ويعطيك شارة المشترك وايموتات المشتركين في الشات، واسمك ينكتب هنا.</p>
+        <p class="subme" id="subMe" hidden>أنت مشترك، شكراً لك</p>
+        <div class="actions" style="justify-content:flex-start">
+          <a class="btn kick" href="https://kick.com/TU1B/subscribe" target="_blank" rel="noopener">اشترك الحين</a>
+          <a class="btn line" href="https://kick.com/TU1B/subscribe" target="_blank" rel="noopener">أهدِ اشتراك</a>
+        </div>
+      </div>
+      <div class="emotes" id="emotes" aria-label="ايموتات المشتركين"></div>
+    </div>
+    <div class="sublist" id="subsList"></div>
   </section>
 
   <div class="duo">
@@ -410,7 +461,7 @@ body.has-admin footer{padding-bottom:110px}
 <script>
 
 const STATE=JSON.parse(document.getElementById('site-state').textContent);
-STATE.photos=STATE.photos||[];STATE.schedule=STATE.schedule||[];STATE.live=!!STATE.live;
+STATE.photos=STATE.photos||[];STATE.schedule=STATE.schedule||[];STATE.live=!!STATE.live;STATE.subs=STATE.subs||[];STATE.emotes=STATE.emotes||[];
 const $=id=>document.getElementById(id);
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 const key=n=>String(n||'').trim().replace(/^@/,'').toLowerCase();
@@ -449,7 +500,7 @@ function renderFind(){
   if(me){
     const h=el('div','hello');const t=el('div');t.append(document.createTextNode('أهلاً '));const nm=nameEl('span','nm',me.name);t.appendChild(nm);
     const ch=el('button',null,'مو أنت؟ غيّر الاسم');ch.type='button';ch.onclick=()=>{setMe('');$('q').value='';$('q').focus()};
-    h.append(t,ch);r.appendChild(h);
+    if(isSub(me.name))t.appendChild(el('span','chip me','مشترك في القناة'));h.append(t,ch);r.appendChild(h);
     const st=el('div','stats');
     const a=el('div','stat');a.append(el('b',null,me.count),el('span',null,'مرات حضور من '+boardsCount()));
     const b=el('div','stat');b.append(el('b',null,'#'+me.rank),el('span',null,'ترتيبك من '+list.length));
@@ -533,7 +584,7 @@ addEventListener('keydown',e=>{if(lb.hidden)return;if(e.key==='Escape')closeLb()
 let sx=0;lb.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
 lb.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)show(cur+(dx>0?1:-1))});
 
-function renderVisitor(){renderFind();renderGrid();renderRank();if(!lb.hidden)show(cur)}
+function renderVisitor(){renderFind();renderGrid();renderRank();renderSubs();if(!lb.hidden)show(cur)}
 function renderAll(){renderNamesList();renderVisitor();renderWeek();renderStatus();if(ADMIN)renderAdmin()}
 if(ME)$('q').value=ME;
 renderAll();
@@ -572,7 +623,7 @@ pollLive();setInterval(pollLive,60000);
 
 // saved boards/names/schedule
 (async()=>{try{const r=await fetch('/api/data',{cache:'no-store'});if(!r.ok)return;const d=await r.json();
-  if(d&&Array.isArray(d.photos)){STATE.photos=d.photos;STATE.schedule=Array.isArray(d.schedule)?d.schedule:[];renderAll()}}catch(e){}})();
+  if(d&&Array.isArray(d.photos)){STATE.photos=d.photos;STATE.schedule=Array.isArray(d.schedule)?d.schedule:[];STATE.subs=Array.isArray(d.subs)?d.subs:[];STATE.emotes=Array.isArray(d.emotes)?d.emotes:[];renderAll()}}catch(e){}})();
 
 function loginNote(){const p=new URLSearchParams(location.search).get('login');if(!p)return'';
   history.replaceState(null,'',location.pathname+location.hash);
@@ -638,6 +689,7 @@ function setDirty(v,text,cls){DIRTY=v;$('saveBtn').disabled=!v||busy;const m=$('
   m.className='msg'+(cls?' '+cls:v?' dirty':'');m.textContent=text||(v?'عندك تعديلات ما انحفظت.':'كل شي محفوظ.')}
 addEventListener('beforeunload',e=>{if(DIRTY){e.preventDefault();e.returnValue=''}});
 function renderAdmin(){
+  renderSubsAdmin();
   const box=$('boardsEdit');box.textContent='';
   if(!STATE.photos.length){box.appendChild(el('div','empty','ما فيه سبورات. اضغط "+ أضف سبورة جديدة".'));return}
   STATE.photos.forEach((p,i)=>{
@@ -674,7 +726,7 @@ function buildDays(){
 async function save(){
   if(busy)return;busy=true;$('saveBtn').disabled=true;setDirty(DIRTY,'جاري الحفظ…','dirty');
   const photos=STATE.photos.map(p=>{const o={full:p.full,thumb:p.thumb,names:(p.names||[]).slice()};for(const k of ['id','tid','g'])if(p[k])o[k]=p[k];return o});
-  try{await post('/api/save',{photos,schedule:STATE.schedule});busy=false;setDirty(false,'انحفظ. الزوار يشوفون التعديلات الحين.','ok');
+  try{await post('/api/save',{photos,schedule:STATE.schedule,subs:STATE.subs,emotes:STATE.emotes.map(e=>({url:e.url,id:e.id,name:e.name||''}))});busy=false;setDirty(false,'انحفظ. الزوار يشوفون التعديلات الحين.','ok');
     const del=DELETED.filter(Boolean);DELETED=[];for(const id of del){if(/^[a-z0-9-]{6,40}$/.test(id))try{await post('/api/img-delete',{key:id})}catch(e){}}}
   catch(e){busy=false;setDirty(true,e.status===401||e.status===403?'صلاحيتك انتهت أو انشالت. سجّل دخول مرة ثانية.':'ما قدرت أحفظ، جرّب مرة ثانية.');if(e.status===401||e.status===403)loadMe()}
 }
@@ -694,6 +746,49 @@ $('addFile').addEventListener('change',async e=>{
   const lastAdd=$('add'+(STATE.photos.length-1));lastAdd&&lastAdd.scrollIntoView({block:'center'});
 });
 loadMe();
+function UPLOAD_PNG(blob){return post('/api/upload',blob,'image/png').then(r=>({url:r.url,id:r.key}))}
+
+/* ---------- Kick subscribers + subscriber emotes (names added by the team) ---------- */
+STATE.subs=Array.isArray(STATE.subs)?STATE.subs:[];STATE.emotes=Array.isArray(STATE.emotes)?STATE.emotes:[];
+function isSub(n){const k=key(n);return !!k&&STATE.subs.some(s=>key(s)===k)}
+function renderSubs(){
+  const em=$('emotes');em.textContent='';
+  if(STATE.emotes.length){STATE.emotes.forEach(e=>{const f=el('figure','emote');const im=el('img');im.src=e.url;im.alt=e.name||'ايموت';im.loading='lazy';
+      f.appendChild(im);if(e.name)f.appendChild(el('figcaption',null,e.name));em.appendChild(f)})}
+  else em.appendChild(el('p','note','ايموتات المشتركين تنزل هنا قريباً.'));
+  const box=$('subsList');box.textContent='';const k=key(ME);
+  $('subsCount').textContent=STATE.subs.length?('عددهم '+STATE.subs.length):'';
+  if(!STATE.subs.length){box.appendChild(el('div','empty','كن أول مشترك، واسمك بينكتب هنا.'));return}
+  STATE.subs.forEach(n=>box.appendChild(nameEl('span','chip sub'+(k&&key(n)===k?' me':''),clean(n))));
+  const mb=$('subMe');mb.hidden=!(ME&&isSub(ME));
+}
+function renderSubsAdmin(){
+  const chips=$('subsEdit');chips.textContent='';
+  STATE.subs.forEach((n,j)=>{const c=nameEl('span','chip',clean(n));const x=el('button',null,'✕');x.type='button';x.setAttribute('aria-label','شيل '+clean(n));
+    x.onclick=()=>{STATE.subs.splice(j,1);renderAll();setDirty(true)};c.appendChild(x);chips.appendChild(c)});
+  if(!STATE.subs.length)chips.appendChild(el('span','note','ما فيه مشتركين للحين.'));
+  const eg=$('emotesEdit');eg.textContent='';
+  STATE.emotes.forEach((e,j)=>{const f=el('div','emote ed');const im=el('img');im.src=e.url;im.alt='';f.appendChild(im);
+    const x=el('button',null,'✕');x.type='button';x.setAttribute('aria-label','احذف الايموت');
+    x.onclick=()=>{DELETED.push(e.id);STATE.emotes.splice(j,1);renderAll();setDirty(true)};f.appendChild(x);eg.appendChild(f)});
+  if(!STATE.emotes.length)eg.appendChild(el('span','note','ما فيه ايموتات. ارفع صورها (PNG بخلفية شفافة أحسن).'));
+}
+$('subAdd').addEventListener('submit',e=>{e.preventDefault();const inp=$('subName');
+  const add=inp.value.split(/[\s,،]+/).map(clean).filter(Boolean);if(!add.length)return;
+  const have=new Set(STATE.subs.map(key));let n=0;add.forEach(a=>{if(!have.has(key(a))){have.add(key(a));STATE.subs.push(a);n++}});
+  inp.value='';renderAll();setDirty(true,n?('انضاف '+n+' مشترك. لا تنسى تضغط حفظ ونشر.'):'الأسماء موجودة من قبل.');inp.focus()});
+function squarePng(file,size){return new Promise((res,rej)=>{const u=URL.createObjectURL(file),im=new Image();
+  im.onload=()=>{const sc=Math.min(1,size/Math.max(im.width,im.height)),cv=document.createElement('canvas');
+    cv.width=Math.round(im.width*sc);cv.height=Math.round(im.height*sc);cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+    URL.revokeObjectURL(u);cv.toBlob(b=>b?res(b):rej(new Error('png')),'image/png')};
+  im.onerror=()=>rej(new Error('load'));im.src=u})}
+$('emoteFile').addEventListener('change',async e=>{
+  const files=[...e.target.files];e.target.value='';if(!files.length||busy||!ADMIN)return;busy=true;let n=0;
+  try{for(const f of files){setDirty(DIRTY,'جاري رفع الايموت '+(n+1)+' من '+files.length+'…','dirty');
+      const r=await UPLOAD_PNG(await squarePng(f,256));STATE.emotes.push({url:r.url,id:r.id,name:f.name.replace(/\.[a-z0-9]+$/i,'').slice(0,30)});n++}}
+  catch(err){busy=false;renderAll();setDirty(n>0,'صار خطأ في رفع ايموت. جرّب صورة ثانية.');return}
+  busy=false;renderAll();setDirty(true,'انرفع '+n+' ايموت. اضغط حفظ ونشر.');
+});
 </script>
 </body>
 </html>
