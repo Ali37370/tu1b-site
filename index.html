@@ -339,6 +339,19 @@ body.has-admin footer{padding-bottom:110px}
 .lnk:is(:hover,:focus-visible,:active) i{box-shadow:0 0 22px var(--c)}
 @media (prefers-reduced-motion:reduce){.lnk::before,.clip::before,.ph::before{transition:none}}
 
+
+/* custom cursor: gold ring + dot (mouse only) */
+.cur{position:fixed;left:0;top:0;z-index:100;pointer-events:none;border-radius:50%;opacity:0;transition:opacity .25s}
+.cur-dot{width:7px;height:7px;margin:-3.5px 0 0 -3.5px;background:var(--gold);box-shadow:0 0 10px var(--gold)}
+.cur-ring{width:38px;height:38px;margin:-19px 0 0 -19px;border:1.5px solid var(--gold);box-shadow:0 0 14px #e2bd7255,inset 0 0 10px #e2bd7222;
+  transition:opacity .25s,width .25s,height .25s,margin .25s,background .25s,border-color .25s}
+html.has-cur .cur{opacity:1}
+html.has-cur.cur-hover .cur-ring{width:64px;height:64px;margin:-32px 0 0 -32px;background:#e2bd7222;border-color:#fff3cf}
+html.has-cur.cur-down .cur-ring{width:28px;height:28px;margin:-14px 0 0 -14px;background:#e2bd7244}
+html.has-cur.cur-text .cur-ring{opacity:0}
+html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;border-color:#fff3cf;border-style:dashed}
+@media (pointer:fine){html.has-cur,html.has-cur *{cursor:none!important}html.has-cur input,html.has-cur textarea{cursor:text!important}}
+
 /* ---------- wide screens: two-column composition ---------- */
 .brand{display:none}
 @media (min-width:1000px){
@@ -609,6 +622,9 @@ body.has-admin footer{padding-bottom:110px}
   <img id="lbImg" alt="">
   <div class="names" id="lbNames"></div>
 </div>
+
+<div class="cur cur-ring" id="curRing" aria-hidden="true"></div>
+<div class="cur cur-dot" id="curDot" aria-hidden="true"></div>
 
 <div class="adminbar" id="adminBar" hidden>
   <span id="adminWho">أنت من فريق الموقع. الزوار ما يشوفون هذا الشريط.</span>
@@ -1047,6 +1063,28 @@ $('clipAdd').addEventListener('submit',e=>{e.preventDefault();const url=$('clipU
 
 function renderExtras(){if(!GAME)return;renderLiveCard();renderClips();gStats()}
 renderExtras();pollLiveInfo();setInterval(pollLiveInfo,60000);loadTop();
+
+/* ---------- custom cursor (only with a real mouse) ---------- */
+(()=>{if(!matchMedia('(pointer:fine) and (hover:hover)').matches)return;
+  const root=document.documentElement,ring=$('curRing'),dot=$('curDot');
+  const still=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let mx=-100,my=-100,rx=-100,ry=-100,shown=false;
+  const HOT='a,button,label[for],.ph,.lnk,.clip,.tgt,summary,[role=button]';
+  addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;
+    if(!shown){shown=true;rx=mx;ry=my;root.classList.add('has-cur')}
+    dot.style.transform='translate('+mx+'px,'+my+'px)';
+    const t=e.target;
+    root.classList.toggle('cur-text',!!t.closest('input,textarea'));
+    root.classList.toggle('cur-game',!!t.closest('#arena.live'));
+    root.classList.toggle('cur-hover',!!t.closest(HOT)&&!t.closest('#arena.live'));
+  },{passive:true});
+  addEventListener('mousedown',()=>root.classList.add('cur-down'));
+  addEventListener('mouseup',()=>root.classList.remove('cur-down'));
+  document.addEventListener('mouseleave',()=>root.classList.remove('has-cur'));
+  document.addEventListener('mouseenter',()=>{if(shown)root.classList.add('has-cur')});
+  (function loop(){rx+=(mx-rx)*(still?1:.22);ry+=(my-ry)*(still?1:.22);
+    ring.style.transform='translate('+rx+'px,'+ry+'px)';requestAnimationFrame(loop)})();
+})();
 </script>
 </body>
 </html>
