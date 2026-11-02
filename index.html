@@ -361,6 +361,16 @@ html.has-cur.cur-text .cur-ring{opacity:0}
 html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;border-color:#fff3cf;border-style:dashed}
 @media (pointer:fine){html.has-cur,html.has-cur *{cursor:none!important}html.has-cur input,html.has-cur textarea{cursor:text!important}}
 
+
+/* Kick login in the top bar */
+.tabs a.tablogin{order:-1;display:inline-flex;align-items:center;gap:8px;background:#53fc18;color:#0b1606;font-weight:700;padding:6px 14px 6px 8px}
+.tabs a.tablogin .k{width:24px;height:24px;border-radius:6px;background:#0b1606;color:#53fc18;display:grid;place-items:center;font-size:14px;font-weight:800}
+.tabs a.tablogin.in{background:var(--surface);color:var(--text);border:1px solid var(--line)}
+.tabs a.tablogin.in img{width:24px;height:24px;border-radius:50%;object-fit:cover}
+.tabs a.tablogin:hover{filter:brightness(1.08);background:#53fc18}
+.tabs a.tablogin.in:hover{background:var(--surface2)}
+@media (min-width:1000px){.tabs a.tablogin{order:10;margin-inline-start:8px}}
+
 /* ---------- wide screens: two-column composition ---------- */
 .brand{display:none}
 @media (min-width:1000px){
@@ -398,6 +408,7 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
 <div dir="rtl" class="site">
 <nav class="tabs" aria-label="أقسام الموقع"><div class="wrap">
   <a class="brand" href="#">TU1B</a>
+  <a class="tablogin" id="tabLogin" href="/api/auth/login"><span class="k">K</span><span id="tabLoginTxt">دخول بكيك</span></a>
   <a class="find" href="#find">وين اسمي؟</a>
   <a href="#album">التحضير</a>
   <a href="#clips">الكليبات</a>
@@ -828,9 +839,17 @@ async function loadMe(){
   $('adminWho').textContent=ROLE==='owner'?'أنت المالك. الزوار ما يشوفون هذا الشريط.':'أنت من فريق الموقع. الزوار ما يشوفون هذا الشريط.';
   $('teamBox').hidden=ROLE!=='owner';if(ROLE==='owner')loadTeam();
 }
+function renderTabLogin(){
+  const tl=$('tabLogin');if(!tl)return;tl.textContent='';
+  if(!USER){tl.className='tablogin';tl.href='/api/auth/login';tl.append(el('span','k','K'),el('span',null,'دخول بكيك'));return}
+  tl.className='tablogin in';tl.href='#find';
+  if(USER.avatar){const im=el('img');im.src=USER.avatar;im.alt='';tl.appendChild(im)}else tl.appendChild(el('span','k','K'));
+  tl.appendChild(el('bdi',null,USER.name));
+}
 function renderAccount(){
+  renderTabLogin();
   const a=$('account');a.textContent='';
-  if(!USER){const l=el('a','btn line','دخول بحساب كيك');l.href='/api/auth/login';a.appendChild(l);
+  if(!USER){const l=el('a','btn kick','دخول بحساب كيك');l.href='/api/auth/login';a.appendChild(l);
     if(NOTE)a.appendChild(el('span','note',NOTE));return}
   if(USER.avatar){const im=el('img');im.src=USER.avatar;im.alt='';a.appendChild(im)}
   a.appendChild(nameEl('span','who2',USER.name));
