@@ -316,6 +316,29 @@ body.has-admin footer{padding-bottom:110px}
   .livecard{padding:24px 28px}
 }
 
+
+/* spotlight: a beam of the card's own colour drops in from above on hover / focus / tap */
+.lnk,.clip,.ph{position:relative;overflow:hidden;isolation:isolate}
+.lnk{--beam:var(--c)}
+.clip{--beam:#53fc18}
+.ph{--beam:#e2bd72}
+.lnk>*,.clip>*{position:relative;z-index:1}
+.lnk::before,.clip::before,.ph::before{content:"";position:absolute;z-index:0;pointer-events:none;top:-2px;left:50%;width:150%;height:115%;
+  background:linear-gradient(to bottom,color-mix(in srgb,var(--beam) 70%,transparent),color-mix(in srgb,var(--beam) 18%,transparent) 55%,transparent);
+  clip-path:polygon(42% 0,58% 0,100% 100%,0 100%);filter:blur(10px);
+  transform:translateX(-50%) scaleY(0);transform-origin:top;opacity:0;transition:transform .5s cubic-bezier(.2,.8,.2,1),opacity .35s}
+.lnk::after,.clip::after,.ph::after{content:"";position:absolute;z-index:0;pointer-events:none;top:0;left:30%;right:30%;height:3px;border-radius:0 0 6px 6px;
+  background:var(--beam);box-shadow:0 0 18px 4px var(--beam);opacity:0;transition:opacity .3s}
+.ph::before,.ph::after{z-index:2}
+.ph .yes{z-index:3}
+.lnk,.clip{filter:brightness(.82);transition:filter .35s,border-color .35s,box-shadow .35s,transform .2s}
+.lnk:hover,.lnk:focus-visible,.lnk:active,.clip:hover,.clip:focus-visible,.clip:active{filter:brightness(1.08);border-color:color-mix(in srgb,var(--beam) 65%,transparent);box-shadow:0 10px 34px -10px color-mix(in srgb,var(--beam) 55%,transparent)}
+.ph:hover,.ph:focus-visible,.ph:active{border-color:color-mix(in srgb,var(--beam) 65%,transparent)}
+:is(.lnk,.clip,.ph):is(:hover,:focus-visible,:active)::before{transform:translateX(-50%) scaleY(1);opacity:1}
+:is(.lnk,.clip,.ph):is(:hover,:focus-visible,:active)::after{opacity:1}
+.lnk:is(:hover,:focus-visible,:active) i{box-shadow:0 0 22px var(--c)}
+@media (prefers-reduced-motion:reduce){.lnk::before,.clip::before,.ph::before{transition:none}}
+
 /* ---------- wide screens: two-column composition ---------- */
 .brand{display:none}
 @media (min-width:1000px){
