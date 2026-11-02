@@ -1,5 +1,7 @@
 import { sign, cookie, randomToken, sha256, b64url } from "../lib/common.mjs";
 export default async (req) => {
+  if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 16 || !process.env.KICK_CLIENT_SECRET)
+    return new Response(null, { status: 302, headers: { location: "/?login=setup#find", "cache-control": "no-store" } });
   const id = process.env.KICK_CLIENT_ID || "01M63VT1BTE2E34A0GJJBCTF62";
   const origin = new URL(req.url).origin;
   const state = randomToken(16), verifier = randomToken(48);

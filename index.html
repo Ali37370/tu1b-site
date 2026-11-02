@@ -815,7 +815,7 @@ async function pollLive(){try{const r=await fetch('/api/live',{cache:'no-store'}
 
 function loginNote(){const p=new URLSearchParams(location.search).get('login');if(!p)return'';
   history.replaceState(null,'',location.pathname+location.hash);
-  return {ok:'',cancel:'لغيت تسجيل الدخول.',expired:'انتهت مدة تسجيل الدخول، جرّب مرة ثانية.',token:'كيك رفض الدخول. تأكد من إعدادات التطبيق.',user:'ما قدرنا نجيب حسابك من كيك.',error:'صار خطأ في تسجيل الدخول، جرّب مرة ثانية.'}[p]||''}
+  return {ok:'',cancel:'لغيت تسجيل الدخول.',expired:'انتهت مدة تسجيل الدخول، جرّب مرة ثانية.',token:'كيك رفض الدخول. تأكد من إعدادات التطبيق.',user:'ما قدرنا نجيب حسابك من كيك.',error:'صار خطأ في تسجيل الدخول، جرّب مرة ثانية.',setup:'تسجيل الدخول بكيك يتجهز، جرّب بعد شوي.'}[p]||''}
 const NOTE=loginNote();
 
 async function loadMe(){
