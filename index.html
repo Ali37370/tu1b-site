@@ -249,6 +249,15 @@ body.has-admin footer{padding-bottom:110px}
 .emote figcaption{font-size:12px;color:var(--muted);direction:ltr;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .emote.ed{position:relative;padding:6px;border-radius:12px;background:var(--surface2);border:1px solid var(--line)}
 .emote.ed button{position:absolute;top:-8px;left:-8px;width:24px;height:24px;border-radius:50%;border:0;background:var(--red);color:#fff;cursor:pointer;font-size:12px}
+
+.subh{margin:0 0 8px;font-size:15px;color:var(--muted);font-weight:600}
+.subside{display:grid;gap:6px}
+.badges{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.badge{margin:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:12px;background:var(--surface2);border:1px solid var(--line);transition:border-color .2s,transform .2s}
+.badge img{width:44px;height:44px;object-fit:contain;filter:drop-shadow(0 3px 8px #000a)}
+.badge figcaption{font-size:13px;color:var(--muted)}
+.badge:hover{border-color:var(--gold);transform:translateY(-3px)}
+.price{color:var(--green)}
 .sublist{display:flex;flex-wrap:wrap;gap:8px}
 .chip.sub{border-color:#53fc1855}
 @media (min-width:1000px){.subcard{grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:28px}.emotes{justify-content:flex-end}}
@@ -538,14 +547,19 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
     <div class="card subcard">
       <div class="subtext">
         <h3>اشترك في قناة تيوب</h3>
-        <p>اشتراكك يدعم تيوب، ويعطيك شارة المشترك وايموتات المشتركين في الشات، واسمك ينكتب هنا.</p>
+        <p>بـ <b class="price">$4.99</b> بالشهر تدعم تيوب، وتاخذ 36 ايموت حصري للمشتركين، وشارة ولاء تكبر مع مدة اشتراكك، واسمك ينكتب هنا.</p>
         <p class="subme" id="subMe" hidden>أنت مشترك، شكراً لك</p>
         <div class="actions" style="justify-content:flex-start">
           <a class="btn kick" href="https://kick.com/TU1B/subscribe" target="_blank" rel="noopener">اشترك الحين</a>
           <a class="btn line" href="https://kick.com/TU1B/subscribe" target="_blank" rel="noopener">أهدِ اشتراك</a>
         </div>
       </div>
-      <div class="emotes" id="emotes" aria-label="ايموتات المشتركين"></div>
+      <div class="subside">
+        <h4 class="subh">شارات المشترك</h4>
+        <div class="badges"><figure class="badge"><img src="badges/b1.png" alt="شارة شهر" width="72" height="72" loading="lazy"><figcaption>شهر</figcaption></figure><figure class="badge"><img src="badges/b2.png" alt="شارة شهرين" width="72" height="72" loading="lazy"><figcaption>شهرين</figcaption></figure><figure class="badge"><img src="badges/b3.png" alt="شارة 3 أشهر" width="72" height="72" loading="lazy"><figcaption>3 أشهر</figcaption></figure><figure class="badge"><img src="badges/b4.png" alt="شارة 6 أشهر" width="72" height="72" loading="lazy"><figcaption>6 أشهر</figcaption></figure><figure class="badge"><img src="badges/b5.png" alt="شارة 9 أشهر" width="72" height="72" loading="lazy"><figcaption>9 أشهر</figcaption></figure><figure class="badge"><img src="badges/b6.png" alt="شارة سنة" width="72" height="72" loading="lazy"><figcaption>سنة</figcaption></figure><figure class="badge"><img src="badges/b7.png" alt="شارة سنة ونص" width="72" height="72" loading="lazy"><figcaption>سنة ونص</figcaption></figure><figure class="badge"><img src="badges/b8.png" alt="شارة سنتين" width="72" height="72" loading="lazy"><figcaption>سنتين</figcaption></figure></div>
+        <h4 class="subh">ايموتات المشتركين</h4>
+        <div class="emotes" id="emotes" aria-label="ايموتات المشتركين"></div>
+      </div>
     </div>
     <div class="sublist" id="subsList"></div>
   </section>
@@ -929,7 +943,7 @@ function renderSubs(){
   const em=$('emotes');em.textContent='';
   if(STATE.emotes.length){STATE.emotes.forEach(e=>{const f=el('figure','emote');const im=el('img');im.src=e.url;im.alt=e.name||'ايموت';im.loading='lazy';
       f.appendChild(im);if(e.name)f.appendChild(el('figcaption',null,e.name));em.appendChild(f)})}
-  else em.appendChild(el('p','note','ايموتات المشتركين تنزل هنا قريباً.'));
+  else em.appendChild(el('p','note','36 ايموت حصري تشوفها في الشات أول ما تشترك.'));
   const box=$('subsList');box.textContent='';const k=key(ME);
   $('subsCount').textContent=STATE.subs.length?('عددهم '+STATE.subs.length):'';
   if(!STATE.subs.length){box.appendChild(el('div','empty','كن أول مشترك، واسمك بينكتب هنا.'));return}
