@@ -272,6 +272,9 @@ body.has-admin footer{padding-bottom:110px}
 .goal-bar{height:12px;border-radius:999px;background:var(--surface2);overflow:hidden;margin:8px 0 6px;border:1px solid var(--line)}
 .goal-bar span{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#9c7a3c,var(--gold),#fff3cf);transition:width 1s ease;float:right}
 .goal small{color:var(--muted);font-size:14px}
+.lc-extra{grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap}
+.lc-extra .btn{flex:1;min-width:140px}
+.btn.wa{background:#25d366;color:#06210f}
 /* clips */
 .clips{display:grid;gap:10px}
 .clip{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--line);text-decoration:none;transition:border-color .2s,transform .2s}
@@ -469,6 +472,10 @@ body.has-admin footer{padding-bottom:110px}
         <div class="lc-meta" id="lcMeta"></div>
       </div>
       <a class="btn kick" id="lcBtn" href="https://kick.com/tu1b" target="_blank" rel="noopener">روح للقناة</a>
+      <div class="lc-extra">
+        <a class="btn wa" href="https://whatsapp.com/channel/0029Vb2msGVDJ6H3bjS04h0g" target="_blank" rel="noopener">قناة الواتس</a>
+        <a class="btn line" href="https://tip.dokan.sa/tu1b" target="_blank" rel="noopener">ادعم تيوب</a>
+      </div>
       <div class="goal" id="goal" hidden>
         <div class="goal-row"><span>هدف المتابعين</span><b id="goalNums"></b></div>
         <div class="goal-bar" id="goalBar" role="progressbar" aria-label="هدف المتابعين" aria-valuemin="0" aria-valuemax="100"><span id="goalFill"></span></div>
@@ -546,12 +553,17 @@ body.has-admin footer{padding-bottom:110px}
     <h2>الحسابات</h2>
     <p class="lead">تابع تيوب في كل مكان.</p>
     <div class="links">
-      <a class="lnk" style="--c:#53fc18;--ci:#0b1606" href="https://kick.com/tu1b" target="_blank" rel="noopener"><i>K</i><span><small>كيك · البث</small><b>tu1b</b></span></a>
+      <a class="lnk" style="--c:#53fc18;--ci:#0b1606" href="https://kick.com/TU1B" target="_blank" rel="noopener"><i>K</i><span><small>كيك · البث المباشر</small><b>TU1B</b></span></a>
+      <a class="lnk" style="--c:#25d366;--ci:#06210f" href="https://whatsapp.com/channel/0029Vb2msGVDJ6H3bjS04h0g" target="_blank" rel="noopener"><i>W</i><span><small>قناة الواتس · أخبار البثوث الحصرية</small><b>TU1B Family</b></span></a>
+      <a class="lnk" style="--c:#e2bd72" href="https://tip.dokan.sa/tu1b" target="_blank" rel="noopener"><i>♥</i><span><small>ادعم تيوب · دكان</small><b>DokanTIP</b></span></a>
       <a class="lnk" style="--c:#fffc00" href="https://www.snapchat.com/add/tu1b3" target="_blank" rel="noopener"><i>S</i><span><small>سناب · اليوميات</small><b>tu1b3</b></span></a>
       <a class="lnk" style="--c:#ff3c6e;--ci:#fff" href="https://www.tiktok.com/@.tu1b" target="_blank" rel="noopener"><i>T</i><span><small>تيك توك</small><b>@.tu1b</b></span></a>
-      <a class="lnk" style="--c:#f4eee4" href="https://x.com/tu1b_" target="_blank" rel="noopener"><i>X</i><span><small>إكس · الأخبار</small><b>@tu1b_</b></span></a>
-      <a class="lnk" style="--c:#ff3b30;--ci:#fff" href="https://www.youtube.com/@tu1b1" target="_blank" rel="noopener"><i>Y</i><span><small>يوتيوب · قريباً</small><b>@tu1b1</b></span></a>
-      <a class="lnk" style="--c:#5865f2;--ci:#fff" href="https://discord.gg/TU1B" target="_blank" rel="noopener"><i>D</i><span><small>ديسكورد · فعاليات</small><b>TU1B</b></span></a>
+      <a class="lnk" style="--c:#ff3c6e;--ci:#fff" href="https://www.tiktok.com/@tu1b.extra" target="_blank" rel="noopener"><i>T</i><span><small>تيك توك · إكسترا</small><b>@tu1b.extra</b></span></a>
+      <a class="lnk" style="--c:#ff3b30;--ci:#fff" href="https://www.youtube.com/@TU1B1" target="_blank" rel="noopener"><i>Y</i><span><small>يوتيوب · المقاطع</small><b>@TU1B1</b></span></a>
+      <a class="lnk" style="--c:#ff3b30;--ci:#fff" href="https://www.youtube.com/@TU1BShorts" target="_blank" rel="noopener"><i>Y</i><span><small>يوتيوب · الشورتس</small><b>@TU1BShorts</b></span></a>
+      <a class="lnk" style="--c:#f4eee4" href="https://x.com/tu1b_" target="_blank" rel="noopener"><i>X</i><span><small>إكس · الأخبار والإنجازات</small><b>@tu1b_</b></span></a>
+      <a class="lnk" style="--c:#d6409f;--ci:#fff" href="https://www.instagram.com/tu1b_plus" target="_blank" rel="noopener"><i>IG</i><span><small>إنستقرام</small><b>@tu1b_plus</b></span></a>
+      <a class="lnk" style="--c:#5865f2;--ci:#fff" href="https://discord.gg/TU1B" target="_blank" rel="noopener"><i>D</i><span><small>ديسكورد · فعاليات وتفاعل يومي</small><b>TU1B</b></span></a>
       <a class="lnk" style="--c:#e2bd72" href="https://botrix.live/k/tu1b/shop" target="_blank" rel="noopener"><i>$</i><span><small>متجر النقاط · اكتب !shop</small><b>BotRix</b></span></a>
     </div>
   </section>
