@@ -19,7 +19,12 @@ export default async (req) => {
   const emotes = (Array.isArray(body.emotes) ? body.emotes : []).slice(0, 80)
     .filter((e) => e && str(e.url, 300) && /^\/img\/[a-z0-9-]{6,40}$/.test(e.url))
     .map((e) => ({ url: e.url, id: str(e.id, 80) || "", name: str(e.name, 40) || "" }));
-  await dataStore().setJSON("state", { photos, schedule, subs, emotes, updated: new Date().toISOString(), by: g.user.n });
+  const clips = (Array.isArray(body.clips) ? body.clips : []).slice(0, 30)
+    .filter((c) => c && str(c.url, 400) && /^https:\/\/(www\.)?(kick\.com|youtube\.com|youtu\.be|tiktok\.com|vm\.tiktok\.com)\//.test(c.url))
+    .map((c) => ({ url: c.url, title: str(c.title, 80) || "", views: Number.isFinite(+c.views) ? Math.max(0, Math.floor(+c.views)) : 0 }));
+  const g0 = body.goal || {};
+  const goal = { followers: Math.max(0, Math.floor(+g0.followers || 0)), target: Math.max(0, Math.floor(+g0.target || 0)) };
+  await dataStore().setJSON("state", { photos, schedule, subs, emotes, clips, goal, updated: new Date().toISOString(), by: g.user.n });
   return json({ ok: true });
 };
 export const config = { path: "/api/save" };

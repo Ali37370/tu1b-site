@@ -253,6 +253,66 @@ body.has-admin footer{padding-bottom:110px}
 .chip.sub{border-color:#53fc1855}
 @media (min-width:1000px){.subcard{grid-template-columns:minmax(0,1fr) minmax(0,1fr);padding:28px}.emotes{justify-content:flex-end}}
 
+
+/* live card + goal */
+.livecard{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:14px 20px;align-items:center}
+.lc-top{display:flex;align-items:center;gap:10px}
+.lc-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 12px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted);font-weight:700;font-size:14px}
+.lc-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:#6f6656}
+.livecard.on .lc-badge{background:var(--red);border-color:var(--red);color:#fff}
+.livecard.on .lc-badge::before{background:#fff;animation:blink 1.2s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+.lc-name{font-weight:700;font-size:20px}
+.lc-title{margin:8px 0 6px;font-size:18px;overflow-wrap:anywhere}
+.lc-meta{display:flex;flex-wrap:wrap;gap:6px}
+.tag{padding:2px 10px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);font-size:14px;color:var(--muted)}
+.goal{grid-column:1/-1;border-top:1px solid var(--line);padding-top:14px}
+.goal-row{display:flex;justify-content:space-between;gap:10px;font-size:16px;color:var(--muted)}
+.goal-row b{color:var(--text);font-variant-numeric:tabular-nums;direction:ltr}
+.goal-bar{height:12px;border-radius:999px;background:var(--surface2);overflow:hidden;margin:8px 0 6px;border:1px solid var(--line)}
+.goal-bar span{display:block;height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,#9c7a3c,var(--gold),#fff3cf);transition:width 1s ease;float:right}
+.goal small{color:var(--muted);font-size:14px}
+/* clips */
+.clips{display:grid;gap:10px}
+.clip{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:var(--surface);border:1px solid var(--line);text-decoration:none;transition:border-color .2s,transform .2s}
+.clip:hover{border-color:var(--gold);transform:translateX(-4px)}
+.clip .cn{font-family:var(--display);font-size:22px;color:var(--gold);width:34px;flex:none;text-align:center}
+.clip .ct{flex:1;min-width:0;display:flex;flex-direction:column}
+.clip .ct b{overflow-wrap:anywhere}
+.clip .ct small{color:var(--muted);font-size:14px}
+.clip .play{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:#0b1606;font-size:15px}
+/* game */
+.gamewrap{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+.gstats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;text-align:center}
+.gstats div{background:var(--surface2);border-radius:12px;padding:8px 4px}
+.gstats span{display:block;font-size:13px;color:var(--muted)}
+.gstats b{font-size:24px;font-variant-numeric:tabular-nums}
+.toph{margin:16px 0 8px;font-size:17px}
+.arena{position:relative;height:360px;border-radius:18px;border:1px solid var(--line);overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none;
+  background:radial-gradient(circle at 50% 50%,#2a2318,#141210 70%);background-size:100% 100%}
+.arena::before{content:"";position:absolute;inset:0;background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:40px 40px}
+.arena.live{cursor:crosshair}
+.gstart{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);min-height:56px;font-size:20px;padding:12px 30px}
+.tgt{position:absolute;border:0;padding:0;border-radius:50%;cursor:crosshair;
+  background:radial-gradient(circle,#fff3cf 0 18%,#e2bd72 19% 38%,#1d1608 39% 52%,#e2bd72 53% 72%,#9c7a3c 73%);
+  box-shadow:0 0 18px #e2bd7299;animation:shrink linear forwards}
+@keyframes shrink{from{transform:scale(1)}to{transform:scale(.15);opacity:.4}}
+.pop{position:absolute;color:var(--gold);font-weight:700;pointer-events:none;animation:up .5s ease-out forwards}
+@keyframes up{to{transform:translateY(-30px);opacity:0}}
+.gover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:6px;padding:16px;background:#141210e6}
+.gover h3{margin:0;font-size:26px;color:var(--gold)}
+.gover p{margin:0 0 6px;color:var(--muted)}
+/* admin fields */
+.fld{display:flex;flex-direction:column;gap:4px;font-size:14px;color:var(--muted);flex:1;min-width:150px}
+.fld input{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);padding:6px 12px;color:var(--text);font-size:16px}
+.clipform{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(200px,100%),1fr));gap:10px;align-items:end;margin-bottom:10px}
+@media (min-width:1000px){
+  .gamewrap{grid-template-columns:minmax(0,340px) minmax(0,1fr);align-items:stretch}
+  .arena{height:420px}
+  .clips{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .livecard{padding:24px 28px}
+}
+
 /* ---------- wide screens: two-column composition ---------- */
 .brand{display:none}
 @media (min-width:1000px){
@@ -292,7 +352,9 @@ body.has-admin footer{padding-bottom:110px}
   <a class="brand" href="#">TU1B</a>
   <a class="find" href="#find">وين اسمي؟</a>
   <a href="#album">التحضير</a>
+  <a href="#clips">الكليبات</a>
   <a href="#subs">المشتركين</a>
+  <a href="#game">اللعبة</a>
   <a href="#honor">لوحة الشرف</a>
   <a href="#schedule">الجدول</a>
   <a href="#links">الحسابات</a>
@@ -374,11 +436,51 @@ body.has-admin footer{padding-bottom:110px}
         </div>
         <div class="emotes" id="emotesEdit" style="margin-top:10px"></div>
       </div>
+      <div>
+        <h3>هدف المتابعين</h3>
+        <p class="note" style="margin-top:0">إذا كيك ما أعطى عدد المتابعين لحاله، اكتبه هنا وحدّثه كل فترة.</p>
+        <div class="row">
+          <label class="fld">عدد المتابعين الحين <input id="goalF" type="number" min="0" inputmode="numeric"></label>
+          <label class="fld">الهدف <input id="goalT" type="number" min="0" inputmode="numeric" placeholder="15000"></label>
+        </div>
+      </div>
+      <div>
+        <h3>الكليبات</h3>
+        <form class="clipform" id="clipAdd">
+          <label class="fld">رابط الكليب <input id="clipUrl" type="url" placeholder="https://kick.com/tu1b?clip=..." dir="ltr"></label>
+          <label class="fld">العنوان <input id="clipTitle" maxlength="80" placeholder="وش صار في الكليب"></label>
+          <label class="fld">المشاهدات (اختياري) <input id="clipViews" type="number" min="0" inputmode="numeric"></label>
+          <button class="btn gold" type="submit">أضف الكليب</button>
+        </form>
+        <div class="tlist" id="clipsEdit"></div>
+      </div>
       <div class="savebar">
         <span class="msg" id="saveMsg" role="status">كل شي محفوظ.</span>
         <button class="btn gold" id="saveBtn" type="button" disabled>حفظ ونشر</button>
       </div>
     </div>
+  </section>
+
+  <section class="sec" id="live" aria-label="حالة البث">
+    <div class="livecard card" id="liveCard">
+      <div class="lc-main">
+        <div class="lc-top"><span class="lc-badge" id="lcBadge">أوفلاين</span><bdi class="lc-name">TU1B</bdi></div>
+        <p class="lc-title" id="lcTitle"></p>
+        <div class="lc-meta" id="lcMeta"></div>
+      </div>
+      <a class="btn kick" id="lcBtn" href="https://kick.com/tu1b" target="_blank" rel="noopener">روح للقناة</a>
+      <div class="goal" id="goal" hidden>
+        <div class="goal-row"><span>هدف المتابعين</span><b id="goalNums"></b></div>
+        <div class="goal-bar" id="goalBar" role="progressbar" aria-label="هدف المتابعين" aria-valuemin="0" aria-valuemax="100"><span id="goalFill"></span></div>
+        <small id="goalLeft"></small>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="clips">
+    <h2>الكليبات</h2>
+    <p class="lead">أقوى لحظات البث. اضغط وتفتح في كيك.</p>
+    <div class="clips" id="clipsList"></div>
   </section>
 
   <section class="sec" id="album">
@@ -403,6 +505,27 @@ body.has-admin footer{padding-bottom:110px}
       <div class="emotes" id="emotes" aria-label="ايموتات المشتركين"></div>
     </div>
     <div class="sublist" id="subsList"></div>
+  </section>
+
+  <section class="sec" id="game">
+    <h2>تحدي التصويب</h2>
+    <p class="lead">عندك 30 ثانية. اضغط على الأهداف الذهبية قبل تختفي. ادخل بحساب كيك عشان تنحفظ نتيجتك في أفضل 3.</p>
+    <div class="gamewrap">
+      <div class="gpanel card">
+        <div class="gstats">
+          <div><span>النقاط</span><b id="gScore">0</b></div>
+          <div><span>الوقت</span><b id="gTime">30</b></div>
+          <div><span>الدقة</span><b id="gAcc">—</b></div>
+          <div><span>أفضل لك</span><b id="gBest">0</b></div>
+        </div>
+        <h3 class="toph">أفضل 3</h3>
+        <ol class="rank" id="topList"></ol>
+      </div>
+      <div class="arena" id="arena">
+        <button class="btn gold gstart" id="gStart" type="button">ابدأ اللعبة</button>
+        <div class="gover" id="gOver" hidden></div>
+      </div>
+    </div>
   </section>
 
   <div class="duo">
@@ -461,7 +584,7 @@ body.has-admin footer{padding-bottom:110px}
 <script>
 
 const STATE=JSON.parse(document.getElementById('site-state').textContent);
-STATE.photos=STATE.photos||[];STATE.schedule=STATE.schedule||[];STATE.live=!!STATE.live;STATE.subs=STATE.subs||[];STATE.emotes=STATE.emotes||[];
+STATE.photos=STATE.photos||[];STATE.schedule=STATE.schedule||[];STATE.live=!!STATE.live;STATE.subs=STATE.subs||[];STATE.emotes=STATE.emotes||[];STATE.clips=STATE.clips||[];STATE.goal=STATE.goal||{followers:0,target:0};
 const $=id=>document.getElementById(id);
 const DAYS=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
 const key=n=>String(n||'').trim().replace(/^@/,'').toLowerCase();
@@ -584,7 +707,7 @@ addEventListener('keydown',e=>{if(lb.hidden)return;if(e.key==='Escape')closeLb()
 let sx=0;lb.addEventListener('touchstart',e=>sx=e.touches[0].clientX,{passive:true});
 lb.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-sx;if(Math.abs(dx)>50)show(cur+(dx>0?1:-1))});
 
-function renderVisitor(){renderFind();renderGrid();renderRank();renderSubs();if(!lb.hidden)show(cur)}
+function renderVisitor(){renderFind();renderGrid();renderRank();renderSubs();renderExtras();if(!lb.hidden)show(cur)}
 function renderAll(){renderNamesList();renderVisitor();renderWeek();renderStatus();if(ADMIN)renderAdmin()}
 if(ME)$('q').value=ME;
 renderAll();
@@ -619,11 +742,11 @@ const post=(url,body,type)=>fetch(url,{method:'POST',headers:{'content-type':typ
 // live status straight from Kick
 async function pollLive(){try{const r=await fetch('/api/live',{cache:'no-store'});if(!r.ok)return;const d=await r.json();
   if(d&&typeof d.live==='boolean'){STATE.live=d.live;renderStatus()}}catch(e){}}
-pollLive();setInterval(pollLive,60000);
+
 
 // saved boards/names/schedule
 (async()=>{try{const r=await fetch('/api/data',{cache:'no-store'});if(!r.ok)return;const d=await r.json();
-  if(d&&Array.isArray(d.photos)){STATE.photos=d.photos;STATE.schedule=Array.isArray(d.schedule)?d.schedule:[];STATE.subs=Array.isArray(d.subs)?d.subs:[];STATE.emotes=Array.isArray(d.emotes)?d.emotes:[];renderAll()}}catch(e){}})();
+  if(d&&Array.isArray(d.photos)){STATE.photos=d.photos;STATE.schedule=Array.isArray(d.schedule)?d.schedule:[];STATE.subs=Array.isArray(d.subs)?d.subs:[];STATE.emotes=Array.isArray(d.emotes)?d.emotes:[];STATE.clips=Array.isArray(d.clips)?d.clips:[];if(d.goal)STATE.goal=d.goal;renderAll()}}catch(e){}})();
 
 function loginNote(){const p=new URLSearchParams(location.search).get('login');if(!p)return'';
   history.replaceState(null,'',location.pathname+location.hash);
@@ -689,7 +812,7 @@ function setDirty(v,text,cls){DIRTY=v;$('saveBtn').disabled=!v||busy;const m=$('
   m.className='msg'+(cls?' '+cls:v?' dirty':'');m.textContent=text||(v?'عندك تعديلات ما انحفظت.':'كل شي محفوظ.')}
 addEventListener('beforeunload',e=>{if(DIRTY){e.preventDefault();e.returnValue=''}});
 function renderAdmin(){
-  renderSubsAdmin();
+  renderSubsAdmin();renderExtrasAdmin();
   const box=$('boardsEdit');box.textContent='';
   if(!STATE.photos.length){box.appendChild(el('div','empty','ما فيه سبورات. اضغط "+ أضف سبورة جديدة".'));return}
   STATE.photos.forEach((p,i)=>{
@@ -726,7 +849,7 @@ function buildDays(){
 async function save(){
   if(busy)return;busy=true;$('saveBtn').disabled=true;setDirty(DIRTY,'جاري الحفظ…','dirty');
   const photos=STATE.photos.map(p=>{const o={full:p.full,thumb:p.thumb,names:(p.names||[]).slice()};for(const k of ['id','tid','g'])if(p[k])o[k]=p[k];return o});
-  try{await post('/api/save',{photos,schedule:STATE.schedule,subs:STATE.subs,emotes:STATE.emotes.map(e=>({url:e.url,id:e.id,name:e.name||''}))});busy=false;setDirty(false,'انحفظ. الزوار يشوفون التعديلات الحين.','ok');
+  try{await post('/api/save',{photos,schedule:STATE.schedule,subs:STATE.subs,emotes:STATE.emotes.map(e=>({url:e.url,id:e.id,name:e.name||''})),clips:STATE.clips,goal:STATE.goal});busy=false;setDirty(false,'انحفظ. الزوار يشوفون التعديلات الحين.','ok');
     const del=DELETED.filter(Boolean);DELETED=[];for(const id of del){if(/^[a-z0-9-]{6,40}$/.test(id))try{await post('/api/img-delete',{key:id})}catch(e){}}}
   catch(e){busy=false;setDirty(true,e.status===401||e.status===403?'صلاحيتك انتهت أو انشالت. سجّل دخول مرة ثانية.':'ما قدرت أحفظ، جرّب مرة ثانية.');if(e.status===401||e.status===403)loadMe()}
 }
@@ -789,6 +912,106 @@ $('emoteFile').addEventListener('change',async e=>{
   catch(err){busy=false;renderAll();setDirty(n>0,'صار خطأ في رفع ايموت. جرّب صورة ثانية.');return}
   busy=false;renderAll();setDirty(true,'انرفع '+n+' ايموت. اضغط حفظ ونشر.');
 });
+
+/* ======================= extras: live card, follower goal, clips, aim game ======================= */
+STATE.clips=Array.isArray(STATE.clips)?STATE.clips:[];STATE.goal=STATE.goal||{followers:0,target:0};
+var LIVEINFO={live:false,viewers:0,title:'',category:'',followers:null};
+const fmtN=n=>Number(n||0).toLocaleString('en-US');
+const shortN=n=>n>=1000?(Math.round(n/100)/10)+'K':String(n);
+
+/* live card + goal */
+function renderLiveCard(){
+  const c=$('liveCard');c.classList.toggle('on',STATE.live);
+  $('lcBadge').textContent=STATE.live?'مباشر':'أوفلاين';
+  $('lcTitle').textContent=STATE.live&&LIVEINFO.title?LIVEINFO.title:(STATE.live?'تيوب مباشر الحين':'تيوب طافي الحين، تابع القناة عشان يوصلك تنبيه');
+  const meta=$('lcMeta');meta.textContent='';
+  if(LIVEINFO.category)meta.appendChild(el('span','tag',LIVEINFO.category));
+  if(STATE.live&&LIVEINFO.viewers)meta.appendChild(el('span','tag',fmtN(LIVEINFO.viewers)+' مشاهد'));
+  $('lcBtn').textContent=STATE.live?'ادخل البث':'روح للقناة';
+  const f=LIVEINFO.followers!=null?LIVEINFO.followers:Number(STATE.goal.followers||0),t=Number(STATE.goal.target||0);
+  const g=$('goal');g.hidden=!(t>0&&f>0);
+  if(t>0&&f>0){const pct=Math.min(100,Math.round(f/t*1000)/10);
+    $('goalNums').textContent=fmtN(f)+' / '+shortN(t);$('goalLeft').textContent=f>=t?'وصلنا الهدف!':('باقي '+fmtN(t-f)+' متابع');
+    $('goalFill').style.width=pct+'%';$('goalBar').setAttribute('aria-valuenow',String(pct))}
+}
+async function pollLiveInfo(){try{const r=await fetch('/api/live',{cache:'no-store'});if(!r.ok)return;const d=await r.json();
+  if(d&&typeof d.live==='boolean'){LIVEINFO={live:d.live,viewers:d.viewers||0,title:d.title||'',category:d.category||'',followers:typeof d.followers==='number'&&d.followers>0?d.followers:null};
+    STATE.live=d.live;renderStatus();renderLiveCard()}}catch(e){}}
+
+/* clips */
+function clipHost(u){try{const h=new URL(u).hostname.replace(/^www\./,'');return h.includes('kick')?'كيك':h.includes('youtu')?'يوتيوب':h.includes('tiktok')?'تيك توك':h}catch(e){return''}}
+function renderClips(){
+  const box=$('clipsList');box.textContent='';
+  if(!STATE.clips.length){box.appendChild(el('div','empty','الكليبات تنزل هنا قريباً.'));return}
+  STATE.clips.forEach((c,i)=>{const a=el('a','clip');a.href=c.url;a.target='_blank';a.rel='noopener';
+    const n=el('span','cn',String(i+1).padStart(2,'0'));const play=el('span','play','▶');
+    const t=el('span','ct');t.appendChild(el('b',null,c.title||'كليب'));
+    t.appendChild(el('small',null,[clipHost(c.url),c.views?fmtN(c.views)+' مشاهدة':''].filter(Boolean).join(' · ')));
+    a.append(n,t,play);box.appendChild(a)});
+}
+
+/* aim game: 30 seconds, hit the shrinking targets */
+var GAME={on:false,score:0,hits:0,shots:0,end:0,timer:null,target:null};
+var BEST=0;try{BEST=Number(localStorage.getItem('tu1b_best')||0)}catch(e){}
+var TOP=[];
+function renderTop(){
+  const ol=$('topList');ol.textContent='';
+  if(!TOP.length){ol.appendChild(el('li','empty','ما فيه نتائج للحين. كن أول واحد!'));return}
+  TOP.slice(0,3).forEach((s,i)=>{const li=el('li','r'+(i+1));li.append(el('span','n',i+1),nameEl('span','u',s.name),el('span','c',s.score+' نقطة'));ol.appendChild(li)});
+}
+async function loadTop(){try{const r=await fetch('/api/scores',{cache:'no-store'});if(r.ok){const d=await r.json();TOP=d.top||[]}}catch(e){}renderTop()}
+function gStats(){$('gScore').textContent=GAME.score;$('gTime').textContent=GAME.on?Math.max(0,Math.ceil((GAME.end-Date.now())/1000)):30;$('gBest').textContent=BEST;
+  $('gAcc').textContent=GAME.shots?Math.round(GAME.hits/GAME.shots*100)+'%':'—'}
+function spawn(){
+  const area=$('arena');if(GAME.target)GAME.target.remove();
+  const t=el('button','tgt');t.type='button';t.setAttribute('aria-label','هدف');
+  const W=area.clientWidth,H=area.clientHeight,s=Math.max(46,Math.min(70,W/7));
+  t.style.width=t.style.height=s+'px';t.style.left=Math.random()*(W-s)+'px';t.style.top=Math.random()*(H-s)+'px';
+  const life=Math.max(650,1300-GAME.score*12);t.style.animationDuration=life+'ms';
+  t.addEventListener('pointerdown',e=>{e.stopPropagation();if(!GAME.on)return;GAME.hits++;GAME.shots++;GAME.score+=1;
+    const pop=el('span','pop','+1');pop.style.left=t.style.left;pop.style.top=t.style.top;area.appendChild(pop);setTimeout(()=>pop.remove(),500);
+    spawn();gStats()});
+  t.addEventListener('animationend',()=>{if(GAME.on&&GAME.target===t)spawn()});
+  area.appendChild(t);GAME.target=t;
+}
+$('arena').addEventListener('pointerdown',()=>{if(GAME.on){GAME.shots++;gStats()}});
+function startGame(){
+  Object.assign(GAME,{on:true,score:0,hits:0,shots:0,end:Date.now()+30000});
+  $('gOver').hidden=true;$('gStart').hidden=true;$('arena').classList.add('live');spawn();gStats();
+  clearInterval(GAME.timer);GAME.timer=setInterval(()=>{gStats();if(Date.now()>=GAME.end)endGame()},200);
+}
+function endGame(){
+  GAME.on=false;clearInterval(GAME.timer);if(GAME.target){GAME.target.remove();GAME.target=null}
+  $('arena').classList.remove('live');
+  const isBest=GAME.score>BEST;if(isBest){BEST=GAME.score;try{localStorage.setItem('tu1b_best',String(BEST))}catch(e){}}
+  gStats();const o=$('gOver');o.hidden=false;o.textContent='';
+  o.appendChild(el('h3',null,isBest&&GAME.score>0?'رقم قياسي جديد!':'خلص الوقت'));
+  o.appendChild(el('p',null,'جبت '+GAME.score+' نقطة، ودقتك '+(GAME.shots?Math.round(GAME.hits/GAME.shots*100):0)+'%'));
+  const row=el('div','actions');
+  if(GAME.score>0){
+    if(USER){const s=el('button','btn gold','احفظ نتيجتي باسم '+USER.name);s.type='button';
+      s.onclick=async()=>{s.disabled=true;s.textContent='جاري الحفظ…';try{const d=await post('/api/scores',{score:GAME.score,hits:GAME.hits,shots:GAME.shots});TOP=d.top||TOP;renderTop();s.textContent='انحفظت'}catch(e){s.disabled=false;s.textContent='ما انحفظت، جرّب مرة ثانية'}};row.appendChild(s)}
+    else{const a=el('a','btn gold','ادخل بكيك عشان تنحفظ نتيجتك');a.href='/api/auth/login';row.appendChild(a)}
+  }
+  const again=el('button','btn line','العب مرة ثانية');again.type='button';again.onclick=startGame;row.appendChild(again);o.appendChild(row);
+}
+$('gStart').onclick=startGame;
+
+/* admin: clips + goal */
+function renderExtrasAdmin(){
+  $('goalF').value=STATE.goal.followers||'';$('goalT').value=STATE.goal.target||'';
+  const box=$('clipsEdit');box.textContent='';
+  STATE.clips.forEach((c,j)=>{const r=el('div','trow');r.appendChild(el('span','u',c.title||c.url));
+    const x=el('button','btn no','حذف');x.type='button';x.onclick=()=>{STATE.clips.splice(j,1);renderAll();setDirty(true)};r.appendChild(x);box.appendChild(r)});
+  if(!STATE.clips.length)box.appendChild(el('span','note','ما فيه كليبات.'));
+}
+$('goalF').onchange=$('goalT').onchange=()=>{STATE.goal={followers:Math.max(0,parseInt($('goalF').value)||0),target:Math.max(0,parseInt($('goalT').value)||0)};renderLiveCard();setDirty(true)};
+$('clipAdd').addEventListener('submit',e=>{e.preventDefault();const url=$('clipUrl').value.trim(),title=$('clipTitle').value.trim(),views=parseInt($('clipViews').value)||0;
+  if(!/^https:\/\/(www\.)?(kick\.com|youtube\.com|youtu\.be|tiktok\.com|vm\.tiktok\.com)\//.test(url)){setDirty(DIRTY,'حط رابط كليب من كيك أو يوتيوب أو تيك توك.');return}
+  STATE.clips.push({url,title:title.slice(0,80),views});$('clipUrl').value=$('clipTitle').value=$('clipViews').value='';renderAll();setDirty(true,'انضاف الكليب. لا تنسى تضغط حفظ ونشر.')});
+
+function renderExtras(){if(!GAME)return;renderLiveCard();renderClips();gStats()}
+renderExtras();pollLiveInfo();setInterval(pollLiveInfo,60000);loadTop();
 </script>
 </body>
 </html>

@@ -48,6 +48,7 @@ export default async () => {
       viewers: st.viewer_count || 0,
       title: ch.stream_title || "",
       category: (ch.category && ch.category.name) || "",
+      followers: typeof ch.followers_count === "number" ? ch.followers_count : (typeof ch.followers === "number" ? ch.followers : null),
       checked: new Date().toISOString(),
     });
   } catch (e) {
