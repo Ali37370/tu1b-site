@@ -394,6 +394,25 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
 #pzWin{z-index:2;background:#141210d9}
 @media (min-width:1000px){#puzzle .gamewrap{grid-template-columns:minmax(0,340px) minmax(0,560px);justify-content:start}}
 
+
+/* إكس أو */
+.xolevels{grid-template-columns:repeat(4,minmax(0,1fr))}
+.xostats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.xostats span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr}
+.xostats .xs{color:var(--gold)}.xostats .os{color:#7cc4ff}
+.xostatus{margin:14px 0 10px;text-align:center;font-size:19px;font-weight:700;min-height:1.6em}
+.xo{direction:ltr;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:420px;aspect-ratio:1;margin-inline:auto;padding:10px;border-radius:20px;background:var(--surface);border:1px solid var(--line)}
+.xo-c{all:unset;cursor:pointer;display:grid;place-items:center;border-radius:14px;background:var(--surface2);border:1px solid var(--line);
+  font-family:var(--display);font-size:clamp(40px,12vw,72px);font-weight:700;line-height:1;transition:background .15s,transform .15s}
+.xo-c:not(:disabled):hover{background:#2f2a22;transform:scale(1.03)}
+.xo-c:disabled{cursor:default}
+.xo-c.x{color:var(--gold);text-shadow:0 0 18px #e2bd7277}
+.xo-c.o{color:#7cc4ff;text-shadow:0 0 18px #7cc4ff66}
+.xo-c.win{background:#3a2f17;border-color:var(--gold);animation:pulsewin .8s ease-in-out 2}
+@keyframes pulsewin{50%{transform:scale(1.08)}}
+.xo-c:focus-visible{outline:3px solid var(--text);outline-offset:2px}
+@media (min-width:1000px){#xo .gamewrap{grid-template-columns:minmax(0,340px) minmax(0,420px);justify-content:start}}
+
 /* ---------- wide screens: two-column composition ---------- */
 .brand{display:none}
 @media (min-width:1000px){
@@ -438,6 +457,7 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
   <a href="#subs">المشتركين</a>
   <a href="#game">اللعبة</a>
   <a href="#puzzle">البازل</a>
+  <a href="#xo">إكس أو</a>
   <a href="#honor">لوحة الشرف</a>
   <a href="#schedule">الجدول</a>
   <a href="#links">الحسابات</a>
@@ -536,6 +556,15 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
           <button class="btn gold" type="submit">أضف الكليب</button>
         </form>
         <div class="tlist" id="clipsEdit"></div>
+      </div>
+      <div>
+        <h3>الألعاب</h3>
+        <p class="note" style="margin-top:0">شغّل أو طفّ أي لعبة، وبعدها اضغط حفظ ونشر.</p>
+        <div class="days">
+          <label><input type="checkbox" id="gsw_aim"> <span>تحدي التصويب</span></label>
+          <label><input type="checkbox" id="gsw_puzzle"> <span>بازل تيوب</span></label>
+          <label><input type="checkbox" id="gsw_xo"> <span>إكس أو</span></label>
+        </div>
       </div>
       <div class="savebar">
         <span class="msg" id="saveMsg" role="status">كل شي محفوظ.</span>
@@ -647,6 +676,29 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
         <div class="pzpeek" id="pzPeek" aria-hidden="true"></div>
         <div class="gover" id="pzWin" hidden></div>
       </div>
+    </div>
+  </section>
+
+  <section class="sec" id="xo">
+    <h2>إكس أو</h2>
+    <p class="lead">العب ضد الكمبيوتر، أو مع خويك على نفس الجهاز.</p>
+    <div class="gamewrap">
+      <div class="gpanel card">
+        <div class="pzlevels xolevels" role="group" aria-label="نوع اللعب">
+          <button class="btn line" type="button" data-xo="easy" aria-pressed="false">سهل</button>
+          <button class="btn line" type="button" data-xo="mid" aria-pressed="true">متوسط</button>
+          <button class="btn line" type="button" data-xo="hard" aria-pressed="false">مستحيل</button>
+          <button class="btn line" type="button" data-xo="two" aria-pressed="false">لاعبين</button>
+        </div>
+        <div class="gstats xostats">
+          <div><span id="xoXl">أنت</span><b class="xs" id="xoX">0</b></div>
+          <div><span>تعادل</span><b id="xoD">0</b></div>
+          <div><span id="xoOl">الكمبيوتر</span><b class="os" id="xoO">0</b></div>
+        </div>
+        <p class="xostatus" id="xoStatus" role="status" aria-live="polite"></p>
+        <button class="btn gold" id="xoAgain" type="button" hidden style="width:100%">جولة ثانية</button>
+      </div>
+      <div class="xo" id="xoBoard"></div>
     </div>
   </section>
 
@@ -876,7 +928,7 @@ async function pollLive(){try{const r=await fetch('/api/live',{cache:'no-store'}
 
 // saved boards/names/schedule
 (async()=>{try{const r=await fetch('/api/data',{cache:'no-store'});if(!r.ok)return;const d=await r.json();
-  if(d&&Array.isArray(d.photos)){STATE.photos=d.photos;STATE.schedule=Array.isArray(d.schedule)?d.schedule:[];STATE.subs=Array.isArray(d.subs)?d.subs:[];STATE.emotes=Array.isArray(d.emotes)?d.emotes:[];STATE.clips=Array.isArray(d.clips)?d.clips:[];if(d.goal)STATE.goal=d.goal;renderAll()}}catch(e){}})();
+  if(d&&Array.isArray(d.photos)){STATE.photos=d.photos;STATE.schedule=Array.isArray(d.schedule)?d.schedule:[];STATE.subs=Array.isArray(d.subs)?d.subs:[];STATE.emotes=Array.isArray(d.emotes)?d.emotes:[];STATE.clips=Array.isArray(d.clips)?d.clips:[];if(d.goal)STATE.goal=d.goal;if(d.games)STATE.games=d.games;renderAll();if(typeof applyGames==='function')applyGames()}}catch(e){}})();
 
 function loginNote(){const p=new URLSearchParams(location.search).get('login');if(!p)return'';
   history.replaceState(null,'',location.pathname+location.hash);
@@ -950,7 +1002,7 @@ function setDirty(v,text,cls){DIRTY=v;$('saveBtn').disabled=!v||busy;const m=$('
   m.className='msg'+(cls?' '+cls:v?' dirty':'');m.textContent=text||(v?'عندك تعديلات ما انحفظت.':'كل شي محفوظ.')}
 addEventListener('beforeunload',e=>{if(DIRTY){e.preventDefault();e.returnValue=''}});
 function renderAdmin(){
-  renderSubsAdmin();renderExtrasAdmin();
+  renderSubsAdmin();renderExtrasAdmin();if(typeof renderGamesAdmin==='function')renderGamesAdmin();
   const box=$('boardsEdit');box.textContent='';
   if(!STATE.photos.length){box.appendChild(el('div','empty','ما فيه سبورات. اضغط "+ أضف سبورة جديدة".'));return}
   STATE.photos.forEach((p,i)=>{
@@ -987,7 +1039,7 @@ function buildDays(){
 async function save(){
   if(busy)return;busy=true;$('saveBtn').disabled=true;setDirty(DIRTY,'جاري الحفظ…','dirty');
   const photos=STATE.photos.map(p=>{const o={full:p.full,thumb:p.thumb,names:(p.names||[]).slice()};for(const k of ['id','tid','g'])if(p[k])o[k]=p[k];return o});
-  try{await post('/api/save',{photos,schedule:STATE.schedule,subs:STATE.subs,emotes:STATE.emotes.map(e=>({url:e.url,id:e.id,name:e.name||''})),clips:STATE.clips,goal:STATE.goal});busy=false;setDirty(false,'انحفظ. الزوار يشوفون التعديلات الحين.','ok');
+  try{await post('/api/save',{photos,schedule:STATE.schedule,subs:STATE.subs,emotes:STATE.emotes.map(e=>({url:e.url,id:e.id,name:e.name||''})),clips:STATE.clips,goal:STATE.goal,games:STATE.games||{}});busy=false;setDirty(false,'انحفظ. الزوار يشوفون التعديلات الحين.','ok');
     const del=DELETED.filter(Boolean);DELETED=[];for(const id of del){if(/^[a-z0-9-]{6,40}$/.test(id))try{await post('/api/img-delete',{key:id})}catch(e){}}}
   catch(e){busy=false;setDirty(true,e.status===401||e.status===403?'صلاحيتك انتهت أو انشالت. سجّل دخول مرة ثانية.':'ما قدرت أحفظ، جرّب مرة ثانية.');if(e.status===401||e.status===403)loadMe()}
 }
@@ -1258,6 +1310,63 @@ var PZ=null;
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>peek.addEventListener(ev,()=>$('pzPeek').classList.remove('show')));
   loadTop();newGame();
 })();
+
+/* ======================= إكس أو: against the computer (3 levels) or two players on one device ======================= */
+(()=>{
+  const cells=$('xoBoard');if(!cells)return;
+  const LINES=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  const G={b:Array(9).fill(''),turn:'X',mode:'cpu',level:'mid',over:false,starter:'X',score:{X:0,O:0,D:0}};
+  const winner=b=>{for(const l of LINES){const [a,c,d]=l;if(b[a]&&b[a]===b[c]&&b[a]===b[d])return{p:b[a],line:l}}return b.every(Boolean)?{p:'D'}:null};
+  const free=b=>b.map((v,i)=>v?-1:i).filter(i=>i>=0);
+  function minimax(b,me,turn){const w=winner(b);if(w)return{s:w.p===me?10:w.p==='D'?0:-10};
+    let best=null;for(const i of free(b)){b[i]=turn;const r=minimax(b,me,turn==='X'?'O':'X');b[i]='';
+      const s=r.s*.95;if(!best||(turn===me?s>best.s:s<best.s))best={s,i}}return best}
+  function cpuMove(){const b=G.b,me='O',you='X',f=free(b),rnd=()=>f[Math.floor(Math.random()*f.length)];
+    if(G.level==='easy')return Math.random()<.25?(findWin(me)??findWin(you)??rnd()):rnd();
+    if(G.level==='mid'){const w=findWin(me);if(w!=null)return w;const bl=findWin(you);if(bl!=null)return bl;
+      if(!b[4]&&Math.random()<.6)return 4;return rnd()}
+    return minimax(b.slice(),me,me).i}
+  function findWin(p){for(const l of LINES){const v=l.map(i=>G.b[i]);if(v.filter(x=>x===p).length===2&&v.includes(''))return l[v.indexOf('')]}return null}
+  function label(p){if(G.mode==='two')return p==='X'?'لاعب X':'لاعب O';
+    return p==='X'?((typeof USER!=='undefined'&&USER)?USER.name:'أنت'):'الكمبيوتر'}
+  function status(t){$('xoStatus').textContent=t}
+  function draw(win){
+    cells.textContent='';
+    G.b.forEach((v,i)=>{const c=el('button','xo-c'+(v?' '+v.toLowerCase():'')+(win&&win.line&&win.line.includes(i)?' win':''));c.type='button';
+      c.textContent=v;c.setAttribute('aria-label','خانة '+(i+1)+(v?' فيها '+v:' فاضية'));c.disabled=!!v||G.over||(G.mode==='cpu'&&G.turn==='O');
+      c.onclick=()=>play(i);cells.appendChild(c)});
+    $('xoX').textContent=G.score.X;$('xoO').textContent=G.score.O;$('xoD').textContent=G.score.D;
+    $('xoXl').textContent=label('X');$('xoOl').textContent=label('O');
+  }
+  function end(w){G.over=true;
+    if(w.p==='D'){G.score.D++;status('تعادل! 🤝')}
+    else{G.score[w.p]++;status(G.mode==='cpu'?(w.p==='X'?'فزت! 🎉':'الكمبيوتر فاز، جرّب مرة ثانية'):('فاز '+label(w.p)+' 🎉'))}
+    draw(w);$('xoAgain').hidden=false}
+  function play(i){if(G.over||G.b[i])return;G.b[i]=G.turn;const w=winner(G.b);if(w)return end(w);
+    G.turn=G.turn==='X'?'O':'X';draw();
+    if(G.mode==='cpu'&&G.turn==='O'){status('الكمبيوتر يفكر…');setTimeout(()=>{if(G.over)return;const m=cpuMove();G.b[m]='O';const w2=winner(G.b);if(w2)return end(w2);G.turn='X';status('دورك');draw()},420)}
+    else status('دور '+label(G.turn))}
+  function newRound(){G.b=Array(9).fill('');G.over=false;$('xoAgain').hidden=true;
+    G.starter=G.starter==='X'?'O':'X';G.turn=G.starter;draw();
+    if(G.mode==='cpu'&&G.turn==='O'){status('الكمبيوتر يبدأ هالمرة');setTimeout(()=>{const m=cpuMove();G.b[m]='O';G.turn='X';status('دورك');draw()},500)}
+    else status(G.mode==='cpu'?'تبدأ أنت':'يبدأ '+label(G.turn))}
+  function setMode(m,l){G.mode=m;if(l)G.level=l;G.score={X:0,O:0,D:0};G.starter='O';
+    document.querySelectorAll('[data-xo]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.xo===(m==='two'?'two':G.level)?'true':'false'));newRound()}
+  document.querySelectorAll('[data-xo]').forEach(b=>b.onclick=()=>b.dataset.xo==='two'?setMode('two'):setMode('cpu',b.dataset.xo));
+  $('xoAgain').onclick=newRound;
+  setMode('cpu','mid');
+})();
+
+/* ---------- game switches (owner turns games on/off from the panel) ---------- */
+const GAME_IDS={aim:'game',puzzle:'puzzle',xo:'xo'};
+function gamesOn(){return Object.assign({aim:true,puzzle:true,xo:true},STATE.games||{})}
+function applyGames(){const g=gamesOn();
+  for(const [k,id] of Object.entries(GAME_IDS)){const s=$(id);if(s)s.hidden=!g[k];
+    document.querySelectorAll('.tabs a[href="#'+id+'"]').forEach(a=>a.hidden=!g[k])}}
+function renderGamesAdmin(){const g=gamesOn();
+  for(const k of Object.keys(GAME_IDS)){const c=$('gsw_'+k);if(c)c.checked=!!g[k]}}
+Object.keys(GAME_IDS).forEach(k=>{const c=$('gsw_'+k);if(c)c.onchange=()=>{STATE.games=Object.assign(gamesOn(),{[k]:c.checked});applyGames();setDirty(true,(c.checked?'تشغّلت ':'انطفت ')+'اللعبة. اضغط حفظ ونشر عشان تتطبّق على الكل.')}});
+applyGames();
 </script>
 </body>
 </html>

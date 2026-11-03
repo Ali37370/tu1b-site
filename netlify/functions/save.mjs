@@ -24,7 +24,9 @@ export default async (req) => {
     .map((c) => ({ url: c.url, title: str(c.title, 80) || "", views: Number.isFinite(+c.views) ? Math.max(0, Math.floor(+c.views)) : 0 }));
   const g0 = body.goal || {};
   const goal = { followers: Math.max(0, Math.floor(+g0.followers || 0)), target: Math.max(0, Math.floor(+g0.target || 0)) };
-  await dataStore().setJSON("state", { photos, schedule, subs, emotes, clips, goal, updated: new Date().toISOString(), by: g.user.n });
+  const g1 = body.games || {};
+  const games = { aim: g1.aim !== false, puzzle: g1.puzzle !== false, xo: g1.xo !== false };
+  await dataStore().setJSON("state", { photos, schedule, subs, emotes, clips, goal, games, updated: new Date().toISOString(), by: g.user.n });
   return json({ ok: true });
 };
 export const config = { path: "/api/save" };
