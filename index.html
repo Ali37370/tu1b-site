@@ -1175,7 +1175,7 @@ renderExtras();pollLiveInfo();setInterval(pollLiveInfo,60000);loadTop();
 var PZ=null;
 (()=>{
   const board=$('pzBoard');if(!board)return;
-  PZ={size:4,order:[],sel:-1,moves:0,start:0,timer:null,img:'',done:false,top:{4:[],6:[],9:[]}};
+  PZ={size:4,order:[],sel:-1,moves:0,start:0,timer:null,img:'',sig:null,done:false,top:{4:[],6:[],9:[]}};
   const fmtT=ms=>{const s=Math.floor(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
   function sources(){
     const list=['portrait.jpg'];
@@ -1187,6 +1187,15 @@ var PZ=null;
       const s=Math.min(im.naturalWidth,im.naturalHeight),c=document.createElement('canvas');const out=Math.min(900,s);c.width=c.height=out;
       c.getContext('2d').drawImage(im,(im.naturalWidth-s)/2,(im.naturalHeight-s)/2,s,s,0,0,out,out);
       try{res(c.toDataURL('image/jpeg',.88))}catch(e){res(src)}};im.onerror=rej;im.src=src})}
+  function signatures(src,n){return new Promise(res=>{const im=new Image();im.onload=()=>{
+      const g=8,c=document.createElement('canvas');c.width=c.height=n*g;const x=c.getContext('2d');x.drawImage(im,0,0,n*g,n*g);
+      let d;try{d=x.getImageData(0,0,n*g,n*g).data}catch(e){return res(null)}
+      const sig=[];for(let r=0;r<n;r++)for(let col=0;col<n;col++){const a=[];
+        for(let yy=0;yy<g;yy++)for(let xx=0;xx<g;xx++){const i=((r*g+yy)*n*g+(col*g+xx))*4;a.push(d[i],d[i+1],d[i+2])}sig.push(a)}
+      res(sig)};im.onerror=()=>res(null);im.src=src})}
+  function same(a,b){if(a===b)return true;const s=PZ.sig;if(!s)return false;const A=s[a],B=s[b];let t=0;
+    for(let i=0;i<A.length;i++)t+=Math.abs(A[i]-B[i]);return t/A.length<7}
+  function solved(){return PZ.order.every((v,i)=>same(v,i))}
   function shuffled(n){const a=[...Array(n*n).keys()];
     do{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
     while(a.filter((v,i)=>v===i).length>1);
@@ -1207,12 +1216,12 @@ var PZ=null;
     if(PZ.sel<0){PZ.sel=pos;draw();return}
     if(PZ.sel===pos){PZ.sel=-1;draw();return}
     const a=PZ.sel;[PZ.order[a],PZ.order[pos]]=[PZ.order[pos],PZ.order[a]];PZ.sel=-1;PZ.moves++;draw();stats();
-    if(PZ.order.every((v,i)=>v===i))win();
+    if(solved())win();
   }
   function win(){
     PZ.done=true;PZ.doneAt=Date.now();clearInterval(PZ.timer);stats();board.classList.add('solved');
     const ms=PZ.doneAt-PZ.start,o=$('pzWin');o.hidden=false;o.textContent='';
-    o.appendChild(el('h3',null,'كمّلت الصورة!'));
+    o.appendChild(el('h3',null,'ممتاز! كمّلت الصورة 🎉'));
     o.appendChild(el('p',null,'خلصتها في '+fmtT(ms)+' بـ '+PZ.moves+' حركة'));
     const row=el('div','actions');
     if(typeof USER!=='undefined'&&USER){const s=el('button','btn gold','احفظ وقتي باسم '+USER.name);s.type='button';
@@ -1220,7 +1229,8 @@ var PZ=null;
         try{const d=await post('/api/puzzle',{size:PZ.size,ms,moves:PZ.moves});PZ.top=d.tops||PZ.top;renderTop();s.textContent='انحفظ'}
         catch(e){s.disabled=false;s.textContent='ما انحفظ، جرّب مرة ثانية'}};row.appendChild(s)}
     else{const a=el('a','btn gold','ادخل بكيك عشان ينحفظ وقتك');a.href='/api/auth/login';row.appendChild(a)}
-    const again=el('button','btn line','صورة ثانية');again.type='button';again.onclick=newGame;row.appendChild(again);o.appendChild(row);
+    const again=el('button','btn line','الصورة اللي بعدها ←');again.type='button';again.onclick=newGame;row.appendChild(again);o.appendChild(row);
+    setTimeout(()=>(row.querySelector('.btn.gold:not([disabled])')||again).focus(),50);
   }
   function renderTop(){
     const ol=$('pzTop');ol.textContent='';const list=PZ.top[PZ.size]||[];
@@ -1235,7 +1245,8 @@ var PZ=null;
     $('pzPeek').style.backgroundImage='none';board.textContent='';board.appendChild(el('p','note','جاري تجهيز الصورة…'));
     try{PZ.img=await squareOf(pick)}catch(e){PZ.img=pick}
     $('pzPeek').style.backgroundImage='url("'+PZ.img+'")';
-    PZ.order=shuffled(PZ.size);draw();stats();
+    PZ.sig=await signatures(PZ.img,PZ.size);
+    do{PZ.order=shuffled(PZ.size)}while(solved());draw();stats();
   }
   document.querySelectorAll('[data-pz]').forEach(b=>b.onclick=()=>{PZ.size=+b.dataset.pz;
     document.querySelectorAll('[data-pz]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));renderTop();newGame()});

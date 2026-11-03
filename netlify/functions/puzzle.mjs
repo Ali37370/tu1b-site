@@ -1,7 +1,7 @@
 import { dataStore, json, session, sameOrigin, ukey } from "../lib/common.mjs";
 // Photo puzzle leaderboard: fastest solve per Kick account, one board per size (4x4, 6x6, 9x9).
 // Times below MIN_MS are not humanly possible for a shuffled board and are refused.
-const SIZES = [4, 6, 9], MIN_MS = { 4: 8000, 6: 20000, 9: 45000 }, MIN_MOVES = { 4: 5, 6: 12, 9: 30 };
+const SIZES = [4, 6, 9], MIN_MS = { 4: 8000, 6: 20000, 9: 45000 }, MIN_MOVES = { 4: 3, 6: 8, 9: 20 };
 const top = (b) => Object.values(b).sort((a, c) => a.ms - c.ms || a.moves - c.moves).slice(0, 10)
   .map(({ name, ms, moves }) => ({ name, ms, moves }));
 export default async (req) => {
