@@ -376,7 +376,8 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
 .pzlevels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:12px}
 .pzlevels .btn{padding:8px 4px;font-size:14px;min-height:44px}
 .pzlevels .btn[aria-pressed="true"]{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
-.pzstats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pzstats{grid-template-columns:repeat(3,minmax(0,1fr))}
+.pzstats b{font-size:20px;direction:ltr}
 .pzbtns{display:grid;gap:8px;margin-top:12px}
 .pzbtns .btn{min-height:44px;font-size:15px}
 .pzstage{position:relative;width:100%;max-width:560px;aspect-ratio:1;margin-inline:auto;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
@@ -632,6 +633,7 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
         <div class="gstats pzstats">
           <div><span>الوقت</span><b id="pzTime">0:00</b></div>
           <div><span>الحركات</span><b id="pzMoves">0</b></div>
+          <div><span>القطع الصح</span><b id="pzRight">—</b></div>
         </div>
         <div class="pzbtns">
           <button class="btn line" id="pzPeekBtn" type="button">اضغط مطوّل عشان تشوف الصورة</button>
@@ -1188,19 +1190,20 @@ var PZ=null;
       c.getContext('2d').drawImage(im,(im.naturalWidth-s)/2,(im.naturalHeight-s)/2,s,s,0,0,out,out);
       try{res(c.toDataURL('image/jpeg',.88))}catch(e){res(src)}};im.onerror=rej;im.src=src})}
   function signatures(src,n){return new Promise(res=>{const im=new Image();im.onload=()=>{
-      const g=8,c=document.createElement('canvas');c.width=c.height=n*g;const x=c.getContext('2d');x.drawImage(im,0,0,n*g,n*g);
+      const g=4,c=document.createElement('canvas');c.width=c.height=n*g;const x=c.getContext('2d');x.drawImage(im,0,0,n*g,n*g);
       let d;try{d=x.getImageData(0,0,n*g,n*g).data}catch(e){return res(null)}
       const sig=[];for(let r=0;r<n;r++)for(let col=0;col<n;col++){const a=[];
         for(let yy=0;yy<g;yy++)for(let xx=0;xx<g;xx++){const i=((r*g+yy)*n*g+(col*g+xx))*4;a.push(d[i],d[i+1],d[i+2])}sig.push(a)}
       res(sig)};im.onerror=()=>res(null);im.src=src})}
   function same(a,b){if(a===b)return true;const s=PZ.sig;if(!s)return false;const A=s[a],B=s[b];let t=0;
-    for(let i=0;i<A.length;i++)t+=Math.abs(A[i]-B[i]);return t/A.length<7}
+    for(let i=0;i<A.length;i++)t+=Math.abs(A[i]-B[i]);return t/A.length<({4:10,6:13,9:16}[PZ.size]||12)}
   function solved(){return PZ.order.every((v,i)=>same(v,i))}
   function shuffled(n){const a=[...Array(n*n).keys()];
     do{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
     while(a.filter((v,i)=>v===i).length>1);
     return a}
-  function stats(){$('pzTime').textContent=fmtT(PZ.start?(PZ.done?PZ.doneAt:Date.now())-PZ.start:0);$('pzMoves').textContent=PZ.moves}
+  function stats(){$('pzTime').textContent=fmtT(PZ.start?(PZ.done?PZ.doneAt:Date.now())-PZ.start:0);$('pzMoves').textContent=PZ.moves;
+    const N=PZ.order.length;$('pzRight').textContent=N?(PZ.order.filter((v,i)=>same(v,i)).length+'/'+N):'—'}
   function draw(){
     const n=PZ.size;board.style.setProperty('--n',n);board.textContent='';
     PZ.order.forEach((piece,pos)=>{const t=el('button','pz'+(pos===PZ.sel?' sel':'')+(PZ.order[pos]===pos?' ok':''));t.type='button';
