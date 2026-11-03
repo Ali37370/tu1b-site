@@ -371,6 +371,28 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
 .tabs a.tablogin.in:hover{background:var(--surface2)}
 @media (min-width:1000px){.tabs a.tablogin{order:10;margin-inline-start:8px}}
 
+
+/* puzzle */
+.pzlevels{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.pzlevels .btn{padding:8px 4px;font-size:14px;min-height:44px}
+.pzlevels .btn[aria-pressed="true"]{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
+.pzstats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pzbtns{display:grid;gap:8px;margin-top:12px}
+.pzbtns .btn{min-height:44px;font-size:15px}
+.pzstage{position:relative;width:100%;max-width:560px;aspect-ratio:1;margin-inline:auto;border-radius:18px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.pzboard{--n:4;position:absolute;inset:0;display:grid;grid-template-columns:repeat(var(--n),1fr);grid-template-rows:repeat(var(--n),1fr);gap:2px;padding:2px;background:#0b0a09}
+.pzboard .note{grid-column:1/-1;grid-row:1/-1;align-self:center;text-align:center}
+.pz{all:unset;cursor:pointer;border-radius:4px;background-repeat:no-repeat;box-shadow:inset 0 0 0 1px #0006;transition:transform .15s,box-shadow .15s,filter .15s}
+.pz:hover{filter:brightness(1.12)}
+.pz.sel{transform:scale(.92);box-shadow:0 0 0 3px var(--gold),0 0 18px #e2bd72aa;filter:brightness(1.15)}
+.pz:focus-visible{box-shadow:0 0 0 3px var(--text)}
+.pzboard.solved{gap:0;padding:0}
+.pzboard.solved .pz{border-radius:0;box-shadow:none}
+.pzpeek{position:absolute;inset:0;background-size:cover;background-position:center;opacity:0;pointer-events:none;transition:opacity .2s}
+.pzpeek.show{opacity:1}
+#pzWin{z-index:2;background:#141210d9}
+@media (min-width:1000px){#puzzle .gamewrap{grid-template-columns:minmax(0,340px) minmax(0,560px);justify-content:start}}
+
 /* ---------- wide screens: two-column composition ---------- */
 .brand{display:none}
 @media (min-width:1000px){
@@ -414,6 +436,7 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
   <a href="#clips">الكليبات</a>
   <a href="#subs">المشتركين</a>
   <a href="#game">اللعبة</a>
+  <a href="#puzzle">البازل</a>
   <a href="#honor">لوحة الشرف</a>
   <a href="#schedule">الجدول</a>
   <a href="#links">الحسابات</a>
@@ -592,6 +615,35 @@ html.has-cur.cur-game .cur-ring{width:30px;height:30px;margin:-15px 0 0 -15px;bo
       <div class="arena" id="arena">
         <button class="btn gold gstart" id="gStart" type="button">ابدأ اللعبة</button>
         <div class="gover" id="gOver" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="puzzle">
+    <h2>بازل تيوب</h2>
+    <p class="lead">الصورة متلخبطة. اضغط على قطعتين عشان يتبادلون مكانهم، ورجّع الصورة كاملة بأسرع وقت.</p>
+    <div class="gamewrap">
+      <div class="gpanel card">
+        <div class="pzlevels" role="group" aria-label="الصعوبة">
+          <button class="btn line" type="button" data-pz="4" aria-pressed="true">سهل 4×4</button>
+          <button class="btn line" type="button" data-pz="6" aria-pressed="false">متوسط 6×6</button>
+          <button class="btn line" type="button" data-pz="9" aria-pressed="false">أسطوري 9×9</button>
+        </div>
+        <div class="gstats pzstats">
+          <div><span>الوقت</span><b id="pzTime">0:00</b></div>
+          <div><span>الحركات</span><b id="pzMoves">0</b></div>
+        </div>
+        <div class="pzbtns">
+          <button class="btn line" id="pzPeekBtn" type="button">اضغط مطوّل عشان تشوف الصورة</button>
+          <button class="btn gold" id="pzNew" type="button">صورة ثانية</button>
+        </div>
+        <h3 class="toph" id="pzTopH">أسرع 3</h3>
+        <ol class="rank" id="pzTop"></ol>
+      </div>
+      <div class="pzstage">
+        <div class="pzboard" id="pzBoard"></div>
+        <div class="pzpeek" id="pzPeek" aria-hidden="true"></div>
+        <div class="gover" id="pzWin" hidden></div>
       </div>
     </div>
   </section>
@@ -1117,6 +1169,80 @@ renderExtras();pollLiveInfo();setInterval(pollLiveInfo,60000);loadTop();
   document.addEventListener('mouseenter',()=>{if(shown)root.classList.add('has-cur')});
   (function loop(){rx+=(mx-rx)*(still?1:.22);ry+=(my-ry)*(still?1:.22);
     ring.style.transform='translate('+rx+'px,'+ry+'px)';requestAnimationFrame(loop)})();
+})();
+
+/* ======================= TU1B photo puzzle: tap two pieces to swap them ======================= */
+var PZ=null;
+(()=>{
+  const board=$('pzBoard');if(!board)return;
+  PZ={size:4,order:[],sel:-1,moves:0,start:0,timer:null,img:'',done:false,top:{4:[],6:[],9:[]}};
+  const fmtT=ms=>{const s=Math.floor(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+  function sources(){
+    const list=['portrait.jpg'];
+    (STATE.photos||[]).forEach(p=>{if(p&&p.full)list.push(p.full)});
+    return list;
+  }
+  // square-crop the chosen photo once, so every piece is cut from the same square
+  function squareOf(src){return new Promise((res,rej)=>{const im=new Image();im.onload=()=>{
+      const s=Math.min(im.naturalWidth,im.naturalHeight),c=document.createElement('canvas');const out=Math.min(900,s);c.width=c.height=out;
+      c.getContext('2d').drawImage(im,(im.naturalWidth-s)/2,(im.naturalHeight-s)/2,s,s,0,0,out,out);
+      try{res(c.toDataURL('image/jpeg',.88))}catch(e){res(src)}};im.onerror=rej;im.src=src})}
+  function shuffled(n){const a=[...Array(n*n).keys()];
+    do{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}}
+    while(a.filter((v,i)=>v===i).length>1);
+    return a}
+  function stats(){$('pzTime').textContent=fmtT(PZ.start?(PZ.done?PZ.doneAt:Date.now())-PZ.start:0);$('pzMoves').textContent=PZ.moves}
+  function draw(){
+    const n=PZ.size;board.style.setProperty('--n',n);board.textContent='';
+    PZ.order.forEach((piece,pos)=>{const t=el('button','pz'+(pos===PZ.sel?' sel':'')+(PZ.order[pos]===pos?' ok':''));t.type='button';
+      const r=Math.floor(piece/n),c=piece%n;
+      t.style.backgroundImage='url("'+PZ.img+'")';t.style.backgroundSize=(n*100)+'% '+(n*100)+'%';
+      t.style.backgroundPosition=(n>1?c/(n-1)*100:0)+'% '+(n>1?r/(n-1)*100:0)+'%';
+      t.setAttribute('aria-label','قطعة '+(pos+1)+(pos===PZ.sel?'، مختارة':''));
+      t.onclick=()=>tap(pos);board.appendChild(t)});
+  }
+  function tap(pos){
+    if(PZ.done||!PZ.order.length)return;
+    if(!PZ.start){PZ.start=Date.now();PZ.timer=setInterval(stats,250)}
+    if(PZ.sel<0){PZ.sel=pos;draw();return}
+    if(PZ.sel===pos){PZ.sel=-1;draw();return}
+    const a=PZ.sel;[PZ.order[a],PZ.order[pos]]=[PZ.order[pos],PZ.order[a]];PZ.sel=-1;PZ.moves++;draw();stats();
+    if(PZ.order.every((v,i)=>v===i))win();
+  }
+  function win(){
+    PZ.done=true;PZ.doneAt=Date.now();clearInterval(PZ.timer);stats();board.classList.add('solved');
+    const ms=PZ.doneAt-PZ.start,o=$('pzWin');o.hidden=false;o.textContent='';
+    o.appendChild(el('h3',null,'كمّلت الصورة!'));
+    o.appendChild(el('p',null,'خلصتها في '+fmtT(ms)+' بـ '+PZ.moves+' حركة'));
+    const row=el('div','actions');
+    if(typeof USER!=='undefined'&&USER){const s=el('button','btn gold','احفظ وقتي باسم '+USER.name);s.type='button';
+      s.onclick=async()=>{s.disabled=true;s.textContent='جاري الحفظ…';
+        try{const d=await post('/api/puzzle',{size:PZ.size,ms,moves:PZ.moves});PZ.top=d.tops||PZ.top;renderTop();s.textContent='انحفظ'}
+        catch(e){s.disabled=false;s.textContent='ما انحفظ، جرّب مرة ثانية'}};row.appendChild(s)}
+    else{const a=el('a','btn gold','ادخل بكيك عشان ينحفظ وقتك');a.href='/api/auth/login';row.appendChild(a)}
+    const again=el('button','btn line','صورة ثانية');again.type='button';again.onclick=newGame;row.appendChild(again);o.appendChild(row);
+  }
+  function renderTop(){
+    const ol=$('pzTop');ol.textContent='';const list=PZ.top[PZ.size]||[];
+    $('pzTopH').textContent='أسرع 3 في '+({4:'السهل',6:'المتوسط',9:'الأسطوري'}[PZ.size]||'');
+    if(!list.length){ol.appendChild(el('li','empty','ما فيه أوقات للحين. كن أول واحد!'));return}
+    list.slice(0,3).forEach((s,i)=>{const li=el('li','r'+(i+1));li.append(el('span','n',i+1),nameEl('span','u',s.name),el('span','c',fmtT(s.ms)));ol.appendChild(li)});
+  }
+  async function loadTop(){try{const r=await fetch('/api/puzzle',{cache:'no-store'});if(r.ok){const d=await r.json();PZ.top=d.tops||PZ.top}}catch(e){}renderTop()}
+  async function newGame(){
+    clearInterval(PZ.timer);Object.assign(PZ,{order:[],sel:-1,moves:0,start:0,done:false});$('pzWin').hidden=true;board.classList.remove('solved');
+    const src=sources();const pick=src[Math.floor(Math.random()*src.length)];
+    $('pzPeek').style.backgroundImage='none';board.textContent='';board.appendChild(el('p','note','جاري تجهيز الصورة…'));
+    try{PZ.img=await squareOf(pick)}catch(e){PZ.img=pick}
+    $('pzPeek').style.backgroundImage='url("'+PZ.img+'")';
+    PZ.order=shuffled(PZ.size);draw();stats();
+  }
+  document.querySelectorAll('[data-pz]').forEach(b=>b.onclick=()=>{PZ.size=+b.dataset.pz;
+    document.querySelectorAll('[data-pz]').forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));renderTop();newGame()});
+  $('pzNew').onclick=newGame;
+  const peek=$('pzPeekBtn');peek.addEventListener('pointerdown',()=>$('pzPeek').classList.add('show'));
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>peek.addEventListener(ev,()=>$('pzPeek').classList.remove('show')));
+  loadTop();newGame();
 })();
 </script>
 </body>
