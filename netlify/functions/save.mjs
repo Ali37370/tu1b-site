@@ -26,7 +26,16 @@ export default async (req) => {
   const goal = { followers: Math.max(0, Math.floor(+g0.followers || 0)), target: Math.max(0, Math.floor(+g0.target || 0)) };
   const g1 = body.games || {};
   const games = { aim: g1.aim !== false, puzzle: g1.puzzle !== false, xo: g1.xo !== false };
-  await dataStore().setJSON("state", { photos, schedule, subs, emotes, clips, goal, games, updated: new Date().toISOString(), by: g.user.n });
+  const timeline = (Array.isArray(body.timeline) ? body.timeline : []).slice(0, 20)
+    .filter((t) => t && (str(t.title, 60) || str(t.text, 240)))
+    .map((t) => ({ year: str(t.year, 20) || "", title: str(t.title, 60) || "", text: str(t.text, 240) || "" }));
+  const e0 = body.event;
+  const event = e0 && str(e0.title, 60) && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(e0.at || "")
+    ? { title: e0.title, at: e0.at, link: (str(e0.link, 300) && /^https:\/\//.test(e0.link)) ? e0.link : "" } : null;
+  const m0 = body.music;
+  const music = m0 && str(m0.url, 300) && /^\/img\/[a-z0-9-]{6,40}$/.test(m0.url)
+    ? { url: m0.url, id: str(m0.id, 80) || "", title: str(m0.title, 60) || "" } : null;
+  await dataStore().setJSON("state", { photos, schedule, subs, emotes, clips, goal, games, timeline, event, music, updated: new Date().toISOString(), by: g.user.n });
   return json({ ok: true });
 };
 export const config = { path: "/api/save" };
