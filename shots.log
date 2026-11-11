@@ -1,0 +1,76 @@
+{
+  "desk_ar_live": {
+    "overflowX": 0,
+    "offenders": [
+      "DIV.orb orb-a L-175 R403",
+      "DIV.orb orb-b L1152 R1568"
+    ],
+    "dir": "rtl",
+    "status": "LIVE · مباشر الحين",
+    "weekToday": 1,
+    "ytCards": 3,
+    "form": "وصل طلبك. بنرد عليك على الإيميل قريب.",
+    "modal": 1,
+    "errors": []
+  },
+  "mob_ar_off": {
+    "overflowX": 0,
+    "offenders": [
+      "DIV.orb orb-a L-175 R403",
+      "DIV.orb orb-b L102 R518",
+      "DIV.orb orb-c L205 R481",
+      "DIV.portal-ring L-28 R418",
+      "DIV.portal-ring portal-ring-2 L-31 R421",
+      "DIV.absolute inset-x-[-6%] bottom-[6%] top-[14%] L-5 R395",
+      "IMG.object-contain object-bottom drop-shadow-[0_30px_60px_rgba(0 L-5 R395",
+      "DIV.pointer-events-none absolute -top-32 end-[-10%] h-72 w-72 ro L-19 R269"
+    ],
+    "dir": "rtl",
+    "status": "OFFLINE · غير متصل",
+    "weekToday": 1,
+    "ytCards": 3,
+    "menuOpen": 1,
+    "errors": []
+  },
+  "mob_en_noapi": {
+    "overflowX": 0,
+    "offenders": [
+      "DIV.orb orb-a L-72 R506",
+      "DIV.orb orb-b L-128 R287",
+      "DIV.orb orb-c L205 R481",
+      "DIV.portal-ring L-12 R402",
+      "DIV.portal-ring portal-ring-2 L-15 R405",
+      "DIV.absolute inset-x-[-6%] bottom-[6%] top-[14%] L-5 R395",
+      "IMG.object-contain object-bottom drop-shadow-[0_30px_60px_rgba(0 L-5 R395",
+      "DIV.pointer-events-none absolute -top-32 end-[-10%] h-72 w-72 ro L121 R409"
+    ],
+    "dir": "ltr",
+    "status": "Couldn't check",
+    "weekToday": 0,
+    "ytCards": 0,
+    "menuOpen": 1,
+    "errors": [
+      "console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ]
+  },
+  "tab_ar_off": {
+    "overflowX": 0,
+    "offenders": [
+      "DIV.orb orb-a L-175 R403",
+      "DIV.orb orb-b L532 R949",
+      "DIV.pointer-events-none absolute -top-32 end-[-10%] h-72 w-72 ro L-52 R236",
+      "DIV.pointer-events-none absolute -bottom-40 left-1/2 h-80 w-[60r L-70 R890"
+    ],
+    "dir": "rtl",
+    "status": "OFFLINE · غير متصل",
+    "weekToday": 0,
+    "ytCards": 0,
+    "errors": []
+  },
+  "tahdeer": {
+    "status": 200,
+    "title": "TU1B"
+  }
+}
