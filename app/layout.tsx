@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Sans_Arabic, Space_Grotesk } from "next/font/google";
+import { IBM_Plex_Sans_Arabic, Outfit } from "next/font/google";
 import type { CSSProperties, ReactNode } from "react";
 import { Providers } from "@/components/providers";
 import { site } from "@/lib/site";
 import "./globals.css";
 
 const ar = IBM_Plex_Sans_Arabic({ subsets: ["arabic", "latin"], weight: ["400", "500", "600", "700"], variable: "--font-ar", display: "swap" });
-const display = Space_Grotesk({ subsets: ["latin"], weight: ["500", "700"], variable: "--font-display", display: "swap" });
+const display = Outfit({ subsets: ["latin"], weight: ["500", "700", "800"], variable: "--font-display", display: "swap" });
 
 const siteUrl = process.env.URL || "https://tu1b-live.netlify.app";
 const description = `${site.name} (${site.nameAr} · ${site.realName.ar}) — ${site.intro.ar}`;
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="ar" dir="rtl" className={`${ar.variable} ${display.variable}`} style={vars} suppressHydrationWarning>
       <body className="bg-ink font-sans text-zinc-100 antialiased">
-        <a href="#main" className="skip-link">تخطَّ إلى المحتوى</a>
+        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-3 focus:z-[100] focus:rounded-xl focus:bg-primary focus:px-4 focus:py-2 focus:font-bold focus:text-white">تخطَّ إلى المحتوى</a>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         <Providers>{children}</Providers>
       </body>

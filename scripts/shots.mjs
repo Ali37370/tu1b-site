@@ -41,6 +41,7 @@ for (const s of scenarios) {
   await p.screenshot({ path: `${OUT}/${s.name}_footer.png` });
   const r = {
     overflowX: await p.evaluate(() => document.documentElement.scrollWidth - window.innerWidth),
+    offenders: await p.evaluate(() => [...document.querySelectorAll("body *")].filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && (r.right > innerWidth + 1 || r.left < -1); }).slice(0, 8).map((e) => e.tagName + "." + String(e.className).slice(0, 60) + " L" + Math.round(e.getBoundingClientRect().left) + " R" + Math.round(e.getBoundingClientRect().right))),
     dir: await p.evaluate(() => document.documentElement.dir),
     status: await p.locator("#live [role=status]").first().textContent(),
     weekToday: await p.locator(".week-day.is-today").count(),

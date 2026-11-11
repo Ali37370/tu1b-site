@@ -13,11 +13,11 @@
 html { scroll-behavior: smooth; background: var(--ink); color-scheme: dark; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 body { min-height: 100vh; overflow-x: hidden; }
+main { overflow-x: clip; }
+[dir="rtl"] .kicker, [dir="rtl"] .tracking-\[0\.2em\] { letter-spacing: 0; }
 ::selection { background: var(--primary); color: #fff; }
 :focus-visible { outline: 2px solid var(--neon); outline-offset: 3px; }
 
-.skip-link { position: fixed; top: -100px; inset-inline-start: 16px; z-index: 100; background: var(--primary); color: #fff; padding: 10px 16px; border-radius: 10px; font-weight: 700; }
-.skip-link:focus { top: 12px; }
 
 @layer components {
   .kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--neon); }

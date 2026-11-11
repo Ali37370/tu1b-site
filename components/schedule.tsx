@@ -57,9 +57,10 @@ export function Schedule() {
           <div className="glass mb-8 inline-flex items-center gap-3 px-5 py-3">
             <CalendarClock className="h-5 w-5 text-neon" aria-hidden />
             <span className="text-zinc-300">{t.schedule.next}</span>
-            <b className="font-display text-lg text-white" dir="ltr">
-              {Math.floor(next / 1440) > 0 && `${Math.floor(next / 1440)}${t.schedule.d} `}
-              {Math.floor((next % 1440) / 60)}{t.schedule.h} {next % 60}{t.schedule.m}
+            <b className="flex gap-2 font-display text-lg text-white">
+              {Math.floor(next / 1440) > 0 && <span>{Math.floor(next / 1440)} {t.schedule.d}</span>}
+              <span>{Math.floor((next % 1440) / 60)} {t.schedule.h}</span>
+              <span>{next % 60} {t.schedule.m}</span>
             </b>
           </div>
         </Reveal>
