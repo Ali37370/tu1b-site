@@ -25,7 +25,7 @@ for (const s of scenarios) {
   const p = await ctx.newPage();
   p.on("pageerror", (e) => errs.push("pageerror: " + e.message));
   p.on("console", (m) => { if (m.type() === "error" || /hydrat/i.test(m.text())) errs.push("console: " + m.text().slice(0, 300)); });
-  await p.goto(BASE + "/", { waitUntil: "networkidle" });
+  await p.goto(BASE + "/", { waitUntil: "load", timeout: 60000 });
   await p.waitForTimeout(1500);
   await p.screenshot({ path: `${OUT}/${s.name}_hero.png` });
   // scroll through to trigger reveals
