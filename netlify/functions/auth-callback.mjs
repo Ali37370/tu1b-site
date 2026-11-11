@@ -1,6 +1,9 @@
 import { verify, sign, cookie, getCookie } from "../lib/common.mjs";
-const back = (origin, why, extra = []) => {
-  const h = new Headers({ location: origin + "/" + (why ? "?login=" + why : "") + "#find", "cache-control": "no-store" });
+const safeNext = (n) => (typeof n === "string" && /^\/[a-z0-9\-\/]*$/i.test(n) && !n.startsWith("//") ? n : null);
+const back = (origin, why, extra = [], next = null) => {
+  const n = safeNext(next);
+  const loc = n ? origin + n + (why && why !== "ok" ? "?login=" + why : "") : origin + "/tahdeer.html" + (why ? "?login=" + why : "") + "#find";
+  const h = new Headers({ location: loc, "cache-control": "no-store" });
   h.append("set-cookie", cookie("tu1b_oauth", "", 0, "/api/auth"));
   extra.forEach((c) => h.append("set-cookie", c));
   return new Response(null, { status: 302, headers: h });
@@ -30,7 +33,7 @@ export default async (req) => {
     if (!name) return back(origin, "user");
     const sess = { n: String(name), u: me.user_id || me.id || null, a: me.profile_picture || "", exp: Date.now() + 30 * 864e5 };
     // the Kick access token is used once and thrown away; only the username is kept
-    return back(origin, "ok", [cookie("tu1b_session", sign(sess), 30 * 86400)]);
+    return back(origin, "ok", [cookie("tu1b_session", sign(sess), 30 * 86400)], st.n);
   } catch { return back(origin, "error"); }
 };
 export const config = { path: "/api/auth/callback" };

@@ -1,6 +1,13 @@
 [build]
-  publish = "."
+  command = "npm run build"
+  publish = ".next"
   functions = "netlify/functions"
+  # Only production (main) builds; other branches are previewed on GitHub Actions.
+  ignore = "if [ \"$BRANCH\" = \"main\" ]; then exit 1; else exit 0; fi"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NEXT_TELEMETRY_DISABLED = "1"
 
 [functions]
   node_bundler = "esbuild"
