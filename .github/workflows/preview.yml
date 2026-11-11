@@ -32,6 +32,15 @@ jobs:
           (npx next start -p 3000 > ci/server.log 2>&1 &)
           for i in $(seq 1 30); do curl -sf http://localhost:3000/ > /dev/null && break; sleep 1; done
           node scripts/shots.mjs > ci/shots.log 2>&1 || echo "shots failed" >> ci/shots.log
+      - name: Netlify build (offline check)
+        if: always()
+        run: |
+          set +e
+          npx --yes netlify-cli@17 build --offline > ci/netlify-build.log 2>&1
+          echo "netlify_code=$?" >> ci/netlify-build.log
+          ls -la .netlify >> ci/netlify-build.log 2>&1
+          find .netlify -maxdepth 3 -type d >> ci/netlify-build.log 2>&1
+          tail -60 ci/netlify-build.log
       - name: Publish results to ci-out branch
         if: always()
         run: |
