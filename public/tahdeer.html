@@ -697,9 +697,11 @@ html.rv .sec{transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
           <button class="btn gold" type="submit">أضف للفريق</button>
         </form>
         <div id="teamLists"></div>
-        <div class="tpbox">
-          <h4>كلمة سر الفريق</h4>
-          <p class="note" style="margin-top:0">للي ما يبون يدخلون بكيك: حط كلمة سر واعطها للمدات. يدخلون فيها من زر "دخول الفريق بكلمة سر". إذا غيّرتها، كل اللي داخلين بالقديمة يطلعون.</p>
+
+      </div>
+      <div id="passBox" hidden>        <div class="tpbox" style="margin-top:0;padding-top:0;border-top:0">
+          <h3>كلمة سر الفريق</h3>
+          <p class="note" style="margin-top:0">تقدر تغيّرها أنت وتيوب بس. للي ما يبون يدخلون بكيك: حط كلمة سر واعطها للمدات. يدخلون فيها من زر "دخول الفريق بكلمة سر". إذا غيّرتها، كل اللي داخلين بالقديمة يطلعون.</p>
           <form class="addname" id="tpForm" style="margin:8px 0">
             <label for="tpPw" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">كلمة سر جديدة</label>
             <input id="tpPw" type="text" minlength="6" maxlength="64" placeholder="كلمة سر جديدة (6 حروف أو أكثر)" autocomplete="off" spellcheck="false">
@@ -1199,7 +1201,7 @@ renderAll();
   requestAnimationFrame(draw);document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!still)requestAnimationFrame(draw)});
 })();
 /* ======================= Netlify: Kick login, team roles, editing ======================= */
-let ROLE='visitor',USER=null;
+let ROLE='visitor',USER=null,CAN_PASS=false;
 const ROLE_TXT={owner:'المالك',editor:'من الفريق',pending:'طلبك قيد المراجعة',rejected:'طلبك مرفوض',visitor:'زائر'};
 const post=(url,body,type)=>fetch(url,{method:'POST',headers:{'content-type':type||'application/json','x-requested-with':'tu1b'},body:type?body:JSON.stringify(body||{})})
   .then(async r=>{const d=await r.json().catch(()=>({}));if(!r.ok){const e=new Error(d.error||('http_'+r.status));e.status=r.status;throw e}return d});
@@ -1219,7 +1221,7 @@ function loginNote(){const p=new URLSearchParams(location.search).get('login');i
 const NOTE=loginNote();
 
 async function loadMe(){
-  try{const r=await fetch('/api/me',{cache:'no-store'});const d=await r.json();USER=d.user;ROLE=d.role||'visitor'}catch(e){USER=null;ROLE='visitor'}
+  try{const r=await fetch('/api/me',{cache:'no-store'});const d=await r.json();USER=d.user;ROLE=d.role||'visitor';CAN_PASS=!!d.canPass}catch(e){USER=null;ROLE='visitor';CAN_PASS=false}
   renderAccount();renderJoin();
   if(USER&&USER.via!=='pass'&&!ME){setMe(USER.name);$('q').value=USER.name}
   $('passForm').hidden=true;
@@ -1227,7 +1229,8 @@ async function loadMe(){
   if(can&&!ADMIN){ADMIN=true;document.body.classList.add('has-admin');$('adminBar').hidden=false;buildDays();renderAdmin()}
   if(!can&&ADMIN){ADMIN=false;document.body.classList.remove('has-admin');$('adminBar').hidden=true;$('adminSec').hidden=true}
   $('adminWho').textContent=ROLE==='owner'?'أنت المالك. الزوار ما يشوفون هذا الشريط.':'أنت من فريق الموقع. الزوار ما يشوفون هذا الشريط.';
-  $('teamBox').hidden=ROLE!=='owner';if(ROLE==='owner'){loadTeam();passAct('status')}
+  $('teamBox').hidden=ROLE!=='owner';if(ROLE==='owner')loadTeam();
+  $('passBox').hidden=!CAN_PASS;if(CAN_PASS)passAct('status');
 }
 function renderTabLogin(){
   const tl=$('tabLogin');if(!tl)return;tl.textContent='';

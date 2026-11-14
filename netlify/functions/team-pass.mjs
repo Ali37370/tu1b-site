@@ -1,7 +1,8 @@
 import { randomBytes, scryptSync } from "node:crypto";
-import { dataStore, getTeamPass, json, requireRole } from "../lib/common.mjs";
+import { canManagePass, dataStore, getTeamPass, json, requireRole } from "../lib/common.mjs";
 export default async (req) => {
-  const g = await requireRole(req, ["owner"]); if (g.error) return g.error;
+  const g = await requireRole(req, ["owner", "editor"]); if (g.error) return g.error;
+  if (!canManagePass(g.user)) return json({ error: "forbidden" }, 403);
   let b; try { b = await req.json(); } catch { b = {}; }
   const store = dataStore();
   if (b.action === "set") {

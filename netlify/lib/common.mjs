@@ -54,6 +54,9 @@ export function cookie(name, value, maxAge, path = "/") {
 export function session(req) {
   try { return verify(getCookie(req, "tu1b_session")); } catch { return null; }
 }
+/* who may set/change the team password: the owner(s) + the streamer (Kick login only) */
+export const passAdmins = () => [...new Set([...owners(), ...(process.env.PASS_ADMINS || "tu1b").split(/[,\s]+/).map(ukey).filter(Boolean)])];
+export const canManagePass = (user) => !!(user && !user.p && passAdmins().includes(ukey(user.n)));
 export const owners = () => (process.env.OWNER_KICK || "").split(/[,\s]+/).map(ukey).filter(Boolean);
 
 export async function getTeam() {
@@ -73,6 +76,7 @@ export async function roleOf(user) {
   }
   const k = ukey(user.n);
   if (owners().includes(k)) return "owner";
+  if (passAdmins().includes(k)) return "editor";
   const t = await getTeam();
   if (t.members.some((m) => m.key === k)) return "editor";
   if (t.requests.some((m) => m.key === k)) return "pending";
