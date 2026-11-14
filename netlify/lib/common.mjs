@@ -60,8 +60,17 @@ export async function getTeam() {
   const t = await dataStore().get("team", { type: "json" });
   return { members: [], requests: [], rejected: [], ...(t || {}) };
 }
+/* team password: stored as scrypt hash; changing it bumps `ver`, which signs everyone out */
+export async function getTeamPass() {
+  return (await dataStore().get("team_pass", { type: "json" })) || null;
+}
 export async function roleOf(user) {
   if (!user || !user.n) return "visitor";
+  if (user.p) {
+    // password sessions are always plain team members, never owner
+    const tp = await getTeamPass();
+    return tp && tp.ver === user.pv ? "editor" : "visitor";
+  }
   const k = ukey(user.n);
   if (owners().includes(k)) return "owner";
   const t = await getTeam();

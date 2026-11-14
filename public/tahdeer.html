@@ -210,6 +210,9 @@ body.has-admin footer{padding-bottom:110px}
 .account{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;min-height:44px}
 .account img{width:34px;height:34px;border-radius:50%;object-fit:cover;background:var(--surface2)}
 .account .who2{font-weight:700}
+.passform{display:grid;gap:10px;max-width:360px;margin:12px auto 0;padding:16px;border-radius:16px;background:var(--surface);border:1px solid var(--line);text-align:right}
+.passform input{min-height:44px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--text);padding:6px 12px;font:inherit}
+.tpbox{margin-top:18px;padding-top:14px;border-top:1px solid var(--line)}
 .account .role{font-size:13px;padding:2px 10px;border-radius:999px;background:var(--surface2);border:1px solid var(--line);color:var(--muted)}
 .account .role.owner,.account .role.editor{background:var(--gold);color:var(--gold-ink);border-color:var(--gold)}
 .linkbtn{background:none;border:0;color:var(--muted);text-decoration:underline;cursor:pointer;font-size:15px;padding:6px}
@@ -651,6 +654,13 @@ html.rv .sec{transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
       <p class="who">ستريمر صاعد على كيك. كنت على تويتش، وقريب بإذن الله على يوتيوب. وفي كل بث نسوي تحضير على السبورة.</p>
       <div class="status" id="status" aria-live="polite"></div>
       <div class="account" id="account"></div>
+      <form class="passform" id="passForm" hidden>
+        <p class="note" style="margin:0">لفريق الموقع: اكتب اسمك وكلمة السر اللي عطاك إياها المالك.</p>
+        <label class="fld">اسمك <input id="passName" maxlength="30" autocomplete="nickname"></label>
+        <label class="fld">كلمة السر <input id="passPw" type="password" maxlength="64" autocomplete="current-password"></label>
+        <button class="btn gold" id="passGo" type="submit">دخول</button>
+        <p class="note" id="passMsg" role="status" style="margin:0"></p>
+      </form>
       <div class="actions">
         <a class="btn kick" href="https://kick.com/tu1b" target="_blank" rel="noopener">تابع البث على كيك</a>
         <a class="btn line" href="#find">وين اسمي في التحضير؟</a>
@@ -687,6 +697,17 @@ html.rv .sec{transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1)}
           <button class="btn gold" type="submit">أضف للفريق</button>
         </form>
         <div id="teamLists"></div>
+        <div class="tpbox">
+          <h4>كلمة سر الفريق</h4>
+          <p class="note" style="margin-top:0">للي ما يبون يدخلون بكيك: حط كلمة سر واعطها للمدات. يدخلون فيها من زر "دخول الفريق بكلمة سر". إذا غيّرتها، كل اللي داخلين بالقديمة يطلعون.</p>
+          <form class="addname" id="tpForm" style="margin:8px 0">
+            <label for="tpPw" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">كلمة سر جديدة</label>
+            <input id="tpPw" type="text" minlength="6" maxlength="64" placeholder="كلمة سر جديدة (6 حروف أو أكثر)" autocomplete="off" spellcheck="false">
+            <button class="btn gold" id="tpSave" type="submit">احفظ كلمة السر</button>
+          </form>
+          <button class="btn no" id="tpClear" type="button" hidden>ألغِ كلمة السر</button>
+          <p class="note" id="tpStatus" role="status"></p>
+        </div>
       </div>
       <div>
         <h3>جدول البث (بتوقيت السعودية)</h3>
@@ -1200,12 +1221,13 @@ const NOTE=loginNote();
 async function loadMe(){
   try{const r=await fetch('/api/me',{cache:'no-store'});const d=await r.json();USER=d.user;ROLE=d.role||'visitor'}catch(e){USER=null;ROLE='visitor'}
   renderAccount();renderJoin();
-  if(USER&&!ME){setMe(USER.name);$('q').value=USER.name}
+  if(USER&&USER.via!=='pass'&&!ME){setMe(USER.name);$('q').value=USER.name}
+  $('passForm').hidden=true;
   const can=ROLE==='owner'||ROLE==='editor';
   if(can&&!ADMIN){ADMIN=true;document.body.classList.add('has-admin');$('adminBar').hidden=false;buildDays();renderAdmin()}
   if(!can&&ADMIN){ADMIN=false;document.body.classList.remove('has-admin');$('adminBar').hidden=true;$('adminSec').hidden=true}
   $('adminWho').textContent=ROLE==='owner'?'أنت المالك. الزوار ما يشوفون هذا الشريط.':'أنت من فريق الموقع. الزوار ما يشوفون هذا الشريط.';
-  $('teamBox').hidden=ROLE!=='owner';if(ROLE==='owner')loadTeam();
+  $('teamBox').hidden=ROLE!=='owner';if(ROLE==='owner'){loadTeam();passAct('status')}
 }
 function renderTabLogin(){
   const tl=$('tabLogin');if(!tl)return;tl.textContent='';
@@ -1218,10 +1240,12 @@ function renderAccount(){
   renderTabLogin();
   const a=$('account');a.textContent='';
   if(!USER){const l=el('a','btn kick','دخول بحساب كيك');l.href='/api/auth/login';a.appendChild(l);
+    const pb=el('button','btn line','دخول الفريق بكلمة سر');pb.type='button';pb.onclick=()=>{const f=$('passForm');f.hidden=!f.hidden;if(!f.hidden)$('passName').focus()};a.appendChild(pb);
     if(NOTE)a.appendChild(el('span','note',NOTE));return}
   if(USER.avatar){const im=el('img');im.src=USER.avatar;im.alt='';a.appendChild(im)}
   a.appendChild(nameEl('span','who2',USER.name));
-  a.appendChild(el('span','role '+ROLE,ROLE_TXT[ROLE]||''));
+  a.appendChild(el('span','role '+ROLE,(ROLE_TXT[ROLE]||'')+(USER.via==='pass'&&ROLE==='editor'?' (كلمة سر)':'')));
+  if(USER.via==='pass'&&ROLE!=='editor')a.appendChild(el('span','note','كلمة السر تغيّرت. اطلع وادخل بالكلمة الجديدة.'));
   const out=el('button','linkbtn','خروج');out.type='button';
   out.onclick=async()=>{if(DIRTY&&!out.dataset.sure){out.dataset.sure=1;out.textContent='عندك تعديلات ما انحفظت. اضغط مرة ثانية للخروج';return}
     try{await post('/api/auth/logout')}catch(e){}DIRTY=false;USER=null;ROLE='visitor';loadMe()};
@@ -1255,6 +1279,22 @@ function renderTeam(){
   sec('الفريق',mem,m=>personRow(m,'',[['إزالة','no',()=>teamAct('remove',m.name)]]));
   if(rej.length)sec('مرفوضين',rej,m=>personRow(m,'',[['وافق عليه','line',()=>teamAct('approve',m.name)]]));
 }
+/* ---------- team password ---------- */
+$('passForm').onsubmit=async e=>{e.preventDefault();const m=$('passMsg');m.textContent='';
+  const name=$('passName').value.trim(),password=$('passPw').value;if(name.length<2){m.textContent='اكتب اسمك.';return}
+  $('passGo').disabled=true;
+  try{await post('/api/auth/pass',{name,password});$('passPw').value='';await loadMe()}
+  catch(err){m.textContent={wrong:'كلمة السر غلط.',rate:'محاولات كثير. جرّب بعد ربع ساعة.',no_pass:'المالك ما حط كلمة سر للفريق للحين.',invalid:'اكتب اسمك وكلمة السر.'}[err.message]||'صار خطأ، جرّب مرة ثانية.'}
+  $('passGo').disabled=false};
+async function passAct(action,password){const s=$('tpStatus');
+  try{const d=await post('/api/team-pass',{action,password});
+    s.textContent=d.set?'فيه كلمة سر شغالة'+(d.updated?' (آخر تغيير '+new Date(d.updated).toLocaleDateString('ar-SA-u-nu-latn-ca-gregory')+')':'')+'.':'ما فيه كلمة سر. الفريق يدخل بكيك بس.';
+    $('tpClear').hidden=!d.set;$('tpSave').textContent=d.set?'غيّر كلمة السر':'احفظ كلمة السر';
+    if(action==='set')s.textContent+=' انحفظت. أي أحد داخل بالكلمة القديمة طلع.';
+    if(action==='clear')s.textContent='انلغت كلمة السر، وكل اللي داخلين فيها طلعوا.'}
+  catch(e){s.textContent=e.message==='length'?'كلمة السر لازم تكون 6 حروف أو أكثر.':'ما قدرت أحفظ، جرّب مرة ثانية.'}}
+$('tpForm').onsubmit=e=>{e.preventDefault();const v=$('tpPw').value;if(v.length<6){$('tpStatus').textContent='كلمة السر لازم تكون 6 حروف أو أكثر.';return}$('tpPw').value='';passAct('set',v)};
+$('tpClear').onclick=()=>passAct('clear');
 $('teamAdd').onsubmit=e=>{e.preventDefault();const n=$('teamName').value.trim().replace(/^@/,'');if(!n)return;$('teamName').value='';teamAct('add',n)};
 
 /* ---------- editing (owner + team) ---------- */

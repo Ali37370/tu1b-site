@@ -5,7 +5,7 @@ export default async (req) => {
   // GET: owner sees the team
   if (req.method === "GET") {
     const user = session(req);
-    if (!user || !owners().includes(ukey(user.n))) return json({ error: "forbidden" }, 403);
+    if (!user || user.p || !owners().includes(ukey(user.n))) return json({ error: "forbidden" }, 403);
     return json(await getTeam());
   }
   if (req.method !== "POST" || !sameOrigin(req)) return json({ error: "bad" }, 400);
@@ -15,6 +15,7 @@ export default async (req) => {
   // any signed-in Kick user can ask to join (or cancel their own request)
   if (action === "request" || action === "cancel") {
     const user = session(req); if (!user) return json({ error: "login" }, 401);
+    if (user.p) return json({ ok: true });
     const k = ukey(user.n); if (owners().includes(k)) return json({ ok: true });
     const t = await getTeam();
     if (t.members.some((m) => m.key === k)) return json({ ok: true });
