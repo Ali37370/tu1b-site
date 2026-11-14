@@ -127,7 +127,7 @@ export function Content() {
               {[0, 1, 2].map((i) => <li key={i} className="h-40 animate-pulse rounded-3xl bg-white/5" />)}
             </ul>
           ) : clips.length === 0 ? (
-            <Empty text={t.content.noClips} href={`${site.kickUrl}/clips`} cta={t.content.watchKick} />
+            <Empty text={t.content.noClips} href={site.clipsPage} cta={t.content.watchKick} />
           ) : (
             <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {clips.map((c, i) => {
@@ -154,6 +154,13 @@ export function Content() {
                 );
               })}
             </ul>
+          )}
+          {clips.length > 0 && (
+            <div className="mt-8">
+              <a href={site.clipsPage} target="_blank" rel="noopener" className="btn-ghost">
+                <BrandIcon id="kick" className="h-4 w-4" /> {t.content.allClips} <ExternalLink className="h-4 w-4 opacity-60" aria-hidden />
+              </a>
+            </div>
           )}
         </div>
       )}

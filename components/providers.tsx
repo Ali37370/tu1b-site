@@ -28,6 +28,13 @@ export type SiteData = { schedule: { d: number; t: string }[]; clips: Clip[]; lo
 const DataContext = createContext<SiteData>({ schedule: site.schedule, clips: [], loaded: false });
 export const useSiteData = () => useContext(DataContext);
 
+/** dashboard clips first, then the featured defaults (no duplicates) */
+function mergeClips(saved: Clip[]): Clip[] {
+  const seen = new Set(saved.map((c) => c.url.split("?")[0].toLowerCase()));
+  const extra = site.featuredClips.filter((c) => !seen.has(c.url.toLowerCase()));
+  return [...saved, ...extra].slice(0, 12);
+}
+
 export function Providers({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("ar");
   const [live, setLive] = useState<LiveState>(initialLive);
@@ -87,11 +94,11 @@ export function Providers({ children }: { children: ReactNode }) {
       .then((d) => {
         setData({
           schedule: d && Array.isArray(d.schedule) && d.schedule.length ? d.schedule : site.schedule,
-          clips: d && Array.isArray(d.clips) ? d.clips : [],
+          clips: mergeClips(d && Array.isArray(d.clips) ? d.clips : []),
           loaded: true,
         });
       })
-      .catch(() => setData((s) => ({ ...s, loaded: true })));
+      .catch(() => setData((s) => ({ ...s, clips: mergeClips([]), loaded: true })));
   }, []);
 
   const langValue = useMemo(() => ({ lang, t: dict[lang], toggle }), [lang, toggle]);

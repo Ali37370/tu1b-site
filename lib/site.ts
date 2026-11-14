@@ -34,6 +34,20 @@ export const site = {
     accent: "#22d3ee",
   },
 
+  /** كليبات مميزة من كيك — تطلع إذا ما انضاف غيرها من لوحة التحكم (اللي تضيفه من اللوحة يطلع أول) */
+  featuredClips: [
+    { url: "https://kick.com/tu1b/clips/clip_01HWQQNTTWT8EAMRGQP6PAJ4BK", title: "السواقه فنااانه 😂", views: 0 },
+    { url: "https://kick.com/tu1b/clips/clip_01HWE0DK07JCDK1QNK2P84R4R9", title: "تيوب المأيم", views: 0 },
+    { url: "https://kick.com/tu1b/clips/clip_01HX55RP4C24F01MTYTM7EGCG4", title: "ون شت ون تاب", views: 0 },
+    { url: "https://kick.com/tu1b/clips/clip_01J8ZM71Q3N5GZ12ZZ0F0WPPK6", title: "مستحييللل 😂", views: 0 },
+    { url: "https://kick.com/tu1b/clips/clip_01JE4EK9Z4F28ZVE7D03AS9ZQB", title: "زوط لا نهائي 😂", views: 0 },
+    { url: "https://kick.com/tu1b/clips/clip_01HWBGC47W5KW5T0DJ67E32YTK", title: "اندعسنا 💔💔", views: 0 },
+    { url: "https://kick.com/tu1b/clips/clip_01JQZK66SZY17JEE97TK2BG3BF", title: "تيوب يقرا قران", views: 0 },
+    { url: "https://kick.com/tu1b/clips/clip_01JBFR47J5KXYZP175RVCDREED", title: "حتى المدنيين يطقطقون على ساس نابولي 😂", views: 0 },
+    { url: "https://kick.com/tu1b/clips/clip_01JW9H29J9K3BNZ6DPT5HX0DRR", title: "الاعلان الجديد", views: 0 },
+  ],
+  clipsPage: "https://kick.com/tu1b/clips",
+
   /** قنوات يوتيوب اللي تنعرض فيديوهاتها في قسم المحتوى */
   youtube: { main: "TU1B1", shorts: "TU1BShorts" },
 
