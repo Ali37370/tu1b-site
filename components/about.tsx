@@ -11,7 +11,7 @@ export function About() {
   const live = useLive();
   const Arrow = lang === "ar" ? ArrowLeft : ArrowRight;
   const followers = live.followers ?? site.followersFallback;
-  const wa = site.moreLinks.find((l) => l.id === "whatsapp");
+  const wa = [...site.socials, ...site.moreLinks].find((l) => l.id === "whatsapp");
   const dc = site.socials.find((l) => l.id === "discord");
 
   const community = [

@@ -33,7 +33,7 @@ export function Footer() {
         </a>
 
         <ul className="mt-10 flex flex-wrap justify-center gap-3" aria-label={t.nav.socials}>
-          {[...site.socials, ...site.moreLinks.filter((l) => l.id === "snapchat" || l.id === "whatsapp")].map((s) => (
+          {[...site.socials, ...site.moreLinks.filter((l) => l.id === "snapchat")].map((s) => (
             <li key={s.url}>
               <a href={s.url} target="_blank" rel="noopener" aria-label={`${s.label[lang]} ${s.handle}`} className="social-dot" style={{ ["--c" as string]: s.color } as CSSProperties}>
                 <BrandIcon id={s.id} className="h-[18px] w-[18px]" />

@@ -34,22 +34,25 @@ export const site = {
     accent: "#22d3ee",
   },
 
+  /** قنوات يوتيوب اللي تنعرض فيديوهاتها في قسم المحتوى */
+  youtube: { main: "TU1B1", shorts: "TU1BShorts" },
+
   /** الحسابات الرئيسية (تطلع كبطاقات) */
   socials: [
     { id: "kick", label: { ar: "كيك", en: "Kick" }, handle: "TU1B", url: "https://kick.com/tu1b", color: "#53fc18" },
     { id: "youtube", label: { ar: "يوتيوب", en: "YouTube" }, handle: "@TU1B1", url: "https://www.youtube.com/@TU1B1", color: "#ff0033" },
+    { id: "youtube", label: { ar: "يوتيوب · شورتس", en: "YouTube Shorts" }, handle: "@TU1BShorts", url: "https://www.youtube.com/@TU1BShorts", color: "#ff0033" },
     { id: "tiktok", label: { ar: "تيك توك", en: "TikTok" }, handle: "@.tu1b", url: "https://www.tiktok.com/@.tu1b", color: "#25f4ee" },
     { id: "instagram", label: { ar: "إنستقرام", en: "Instagram" }, handle: "@tu1b_plus", url: "https://www.instagram.com/tu1b_plus", color: "#e1306c" },
     { id: "discord", label: { ar: "ديسكورد", en: "Discord" }, handle: "TU1B", url: "https://discord.gg/TU1B", color: "#5865f2" },
     { id: "x", label: { ar: "إكس", en: "X" }, handle: "@tu1b_", url: "https://x.com/tu1b_", color: "#e7e9ea" },
+    { id: "whatsapp", label: { ar: "قناة الواتس", en: "WhatsApp Channel" }, handle: "TU1B Family", url: "https://whatsapp.com/channel/0029Vb2msGVDJ6H3bjS04h0g", color: "#25d366" },
   ] as Social[],
 
   /** حسابات إضافية (تطلع كأزرار صغيرة) */
   moreLinks: [
-    { id: "youtube", label: { ar: "يوتيوب شورتس", en: "YouTube Shorts" }, handle: "@TU1BShorts", url: "https://www.youtube.com/@TU1BShorts", color: "#ff0033" },
     { id: "tiktok", label: { ar: "تيك توك إكسترا", en: "TikTok Extra" }, handle: "@tu1b.extra", url: "https://www.tiktok.com/@tu1b.extra", color: "#25f4ee" },
     { id: "snapchat", label: { ar: "سناب", en: "Snapchat" }, handle: "tu1b3", url: "https://www.snapchat.com/add/tu1b3", color: "#fffc00" },
-    { id: "whatsapp", label: { ar: "قناة الواتس", en: "WhatsApp Channel" }, handle: "TU1B Family", url: "https://whatsapp.com/channel/0029Vb2msGVDJ6H3bjS04h0g", color: "#25d366" },
     { id: "tip", label: { ar: "ادعم تيوب", en: "Tip TU1B" }, handle: "DokanTIP", url: "https://tip.dokan.sa/tu1b", color: "#c084fc" },
     { id: "shop", label: { ar: "متجر النقاط", en: "Points shop" }, handle: "BotRix · !shop", url: "https://botrix.live/k/tu1b/shop", color: "#c084fc" },
   ] as Social[],

@@ -11,10 +11,10 @@ export function Socials() {
   const Arrow = lang === "ar" ? ArrowUpLeft : ArrowUpRight;
   return (
     <Section id="socials" kicker="SOCIAL" title={t.socials.title} lead={t.socials.lead}>
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {site.socials.map((s, i) => (
           <motion.li
-            key={s.id}
+            key={s.url}
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "0px 0px -8% 0px" }}

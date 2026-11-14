@@ -83,7 +83,7 @@ export function Hero() {
 
           <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.15 }} className="mt-8 flex flex-wrap justify-center gap-2 lg:justify-start" aria-label={t.nav.socials}>
             {site.socials.map((s) => (
-              <li key={s.id}>
+              <li key={s.url}>
                 <a href={s.url} target="_blank" rel="noopener" aria-label={`${s.label[lang]} ${s.handle}`} className="social-dot" style={{ ["--c" as string]: s.color } as CSSProperties}>
                   <BrandIcon id={s.id} className="h-[18px] w-[18px]" />
                 </a>

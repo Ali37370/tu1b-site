@@ -18,20 +18,25 @@ function clipSource(url: string): "kick" | "youtube" | "tiktok" {
 export function Content() {
   const { t, lang } = useLang();
   const { clips, loaded } = useSiteData();
-  const [tab, setTab] = useState<"yt" | "clips">("yt");
-  const [videos, setVideos] = useState<Video[] | null>(null);
-  const [channel, setChannel] = useState(site.socials.find((s) => s.id === "youtube")?.url || "https://www.youtube.com");
-  const [playing, setPlaying] = useState<Video | null>(null);
+  const [tab, setTab] = useState<"yt" | "shorts" | "clips">("yt");
+  const [feeds, setFeeds] = useState<Record<"yt" | "shorts", Video[] | null>>({ yt: null, shorts: null });
+  const [channels, setChannels] = useState({
+    yt: `https://www.youtube.com/@${site.youtube.main}`,
+    shorts: `https://www.youtube.com/@${site.youtube.shorts}`,
+  });
+  const [playing, setPlaying] = useState<(Video & { short?: boolean }) | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    fetch("/api/youtube")
-      .then((r) => (r.ok ? r.json() : null))
-      .then((d) => {
-        if (d?.channel) setChannel(d.channel);
-        setVideos(Array.isArray(d?.videos) ? d.videos : []);
-      })
-      .catch(() => setVideos([]));
+    (["yt", "shorts"] as const).forEach((k) => {
+      fetch(k === "shorts" ? "/api/youtube?ch=shorts" : "/api/youtube")
+        .then((r) => (r.ok ? r.json() : null))
+        .then((d) => {
+          if (d?.channel) setChannels((c) => ({ ...c, [k]: d.channel }));
+          setFeeds((f) => ({ ...f, [k]: Array.isArray(d?.videos) ? d.videos : [] }));
+        })
+        .catch(() => setFeeds((f) => ({ ...f, [k]: [] })));
+    });
   }, []);
 
   useEffect(() => {
@@ -48,64 +53,72 @@ export function Content() {
     <Section id="content" kicker="CONTENT" title={t.content.title} lead={t.content.lead}>
       <Reveal>
         <div role="tablist" aria-label={t.content.title} className="mb-8 inline-flex rounded-full border border-white/10 bg-white/5 p-1">
-          {(["yt", "clips"] as const).map((k) => (
+          {(["yt", "shorts", "clips"] as const).map((k) => (
             <button
               key={k}
               role="tab"
               aria-selected={tab === k}
               onClick={() => setTab(k)}
-              className={`relative min-h-[44px] rounded-full px-5 text-sm font-semibold transition ${tab === k ? "text-white" : "text-zinc-400 hover:text-white"}`}
+              className={`relative min-h-[44px] rounded-full px-4 text-sm sm:px-5 font-semibold transition ${tab === k ? "text-white" : "text-zinc-400 hover:text-white"}`}
             >
               {tab === k && <motion.span layoutId="tabpill" className="absolute inset-0 rounded-full bg-gradient-to-r from-secondary to-primary" />}
               <span className="relative inline-flex items-center gap-2">
-                {k === "yt" ? <BrandIcon id="youtube" className="h-4 w-4" /> : <Film className="h-4 w-4" aria-hidden />}
-                {k === "yt" ? t.content.yt : t.content.clips}
+                {k === "clips" ? <Film className="h-4 w-4" aria-hidden /> : <BrandIcon id="youtube" className="h-4 w-4" />}
+                {k === "yt" ? t.content.yt : k === "shorts" ? t.content.shorts : t.content.clips}
               </span>
             </button>
           ))}
         </div>
       </Reveal>
 
-      {tab === "yt" && (
-        <div role="tabpanel">
-          {videos === null ? (
-            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3" aria-label={t.content.loading}>
-              {[0, 1, 2].map((i) => <li key={i} className="aspect-video animate-pulse rounded-3xl bg-white/5" />)}
-            </ul>
-          ) : videos.length === 0 ? (
-            <Empty text={t.content.noYt} href={channel} cta={t.content.openChannel} />
-          ) : (
-            <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {videos.slice(0, 6).map((v, i) => (
-                <motion.li key={v.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}>
-                  <button onClick={() => setPlaying(v)} className="group block w-full text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-3xl" aria-label={`${t.content.play}: ${v.title}`}>
-                    <GlowCard className="overflow-hidden">
-                      <div className="relative aspect-video overflow-hidden">
-                        <Image src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`} alt="" fill sizes="(max-width: 640px) 92vw, 380px" className="object-cover transition duration-500 group-hover:scale-105" />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent" />
-                        <span className="play-btn"><Play className="h-6 w-6 fill-current" aria-hidden /></span>
-                      </div>
-                      <div className="p-5">
-                        <p className="line-clamp-2 font-semibold leading-snug text-white">{v.title}</p>
-                        <p className="mt-2 text-xs text-zinc-500">
-                          {date(v.published)}{v.views ? ` · ${fmt(v.views, lang)} ${t.content.views}` : ""}
-                        </p>
-                      </div>
-                    </GlowCard>
-                  </button>
-                </motion.li>
-              ))}
-            </ul>
-          )}
-          {videos && videos.length > 0 && (
-            <div className="mt-8">
-              <a href={channel} target="_blank" rel="noopener" className="btn-ghost">
-                <BrandIcon id="youtube" className="h-4 w-4" /> {t.content.openChannel} <ExternalLink className="h-4 w-4 opacity-60" aria-hidden />
-              </a>
-            </div>
-          )}
-        </div>
-      )}
+      {(tab === "yt" || tab === "shorts") && (() => {
+        const videos = feeds[tab];
+        const channel = channels[tab];
+        const short = tab === "shorts";
+        return (
+          <div role="tabpanel">
+            {videos === null ? (
+              <ul className={short ? "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5" : "grid gap-5 sm:grid-cols-2 lg:grid-cols-3"} aria-label={t.content.loading}>
+                {[0, 1, 2].map((i) => <li key={i} className={`${short ? "aspect-[9/16]" : "aspect-video"} animate-pulse rounded-3xl bg-white/5`} />)}
+              </ul>
+            ) : videos.length === 0 ? (
+              <Empty text={t.content.noYt} href={channel} cta={t.content.openChannel} />
+            ) : (
+              <ul className={short ? "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5" : "grid gap-5 sm:grid-cols-2 lg:grid-cols-3"}>
+                {videos.slice(0, short ? 10 : 6).map((v, i) => (
+                  <motion.li key={v.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
+                    <button onClick={() => setPlaying({ ...v, short })} className="group block w-full rounded-3xl text-start focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary" aria-label={`${t.content.play}: ${v.title}`}>
+                      <GlowCard className="overflow-hidden">
+                        <div className={`relative overflow-hidden ${short ? "aspect-[9/16]" : "aspect-video"}`}>
+                          <Image src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`} alt="" fill sizes={short ? "(max-width: 640px) 46vw, 230px" : "(max-width: 640px) 92vw, 380px"} className={`object-cover transition duration-500 group-hover:scale-105 ${short ? "scale-[1.35] group-hover:scale-[1.42]" : ""}`} />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent" />
+                          <span className="play-btn"><Play className="h-6 w-6 fill-current" aria-hidden /></span>
+                          {short && <p className="absolute inset-x-0 bottom-0 line-clamp-2 p-3 text-sm font-semibold leading-snug text-white">{v.title}</p>}
+                        </div>
+                        {!short && (
+                          <div className="p-5">
+                            <p className="line-clamp-2 font-semibold leading-snug text-white">{v.title}</p>
+                            <p className="mt-2 text-xs text-zinc-500">
+                              {date(v.published)}{v.views ? ` · ${fmt(v.views, lang)} ${t.content.views}` : ""}
+                            </p>
+                          </div>
+                        )}
+                      </GlowCard>
+                    </button>
+                  </motion.li>
+                ))}
+              </ul>
+            )}
+            {videos && videos.length > 0 && (
+              <div className="mt-8">
+                <a href={channel} target="_blank" rel="noopener" className="btn-ghost">
+                  <BrandIcon id="youtube" className="h-4 w-4" /> {t.content.openChannel} <ExternalLink className="h-4 w-4 opacity-60" aria-hidden />
+                </a>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {tab === "clips" && (
         <div role="tabpanel">
@@ -153,11 +166,11 @@ export function Content() {
             onClick={() => setPlaying(null)}
             role="dialog" aria-modal="true" aria-label={playing.title}
           >
-            <motion.div initial={{ scale: 0.94 }} animate={{ scale: 1 }} exit={{ scale: 0.94 }} className="relative w-full max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <motion.div initial={{ scale: 0.94 }} animate={{ scale: 1 }} exit={{ scale: 0.94 }} className={`relative w-full ${playing.short ? "max-w-[min(360px,calc((100svh-160px)*9/16))]" : "max-w-4xl"}`} onClick={(e) => e.stopPropagation()}>
               <button ref={closeRef} onClick={() => setPlaying(null)} className="absolute -top-14 end-0 inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/15 bg-white/10 text-white" aria-label={t.content.close}>
                 <X className="h-5 w-5" aria-hidden />
               </button>
-              <div className="aspect-video overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl">
+              <div className={`${playing.short ? "aspect-[9/16]" : "aspect-video"} overflow-hidden rounded-2xl border border-white/10 bg-black shadow-2xl`}>
                 <iframe
                   src={`https://www.youtube-nocookie.com/embed/${playing.id}?autoplay=1&rel=0`}
                   title={playing.title}

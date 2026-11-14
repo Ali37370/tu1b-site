@@ -19,7 +19,7 @@ for (const s of scenarios) {
   const errs = [];
   if (s.live) await ctx.route("**/api/live", (r) => r.fulfill({ json: s.live }));
   if (s.data) await ctx.route("**/api/data", (r) => r.fulfill({ json: s.data }));
-  if (s.yt) await ctx.route("**/api/youtube", (r) => r.fulfill({ json: s.yt }));
+  if (s.yt) await ctx.route("**/api/youtube**", (r) => r.fulfill({ json: r.request().url().includes("shorts") ? { ...s.yt, channel: "https://www.youtube.com/@TU1BShorts" } : s.yt }));
   await ctx.route("https://player.kick.com/**", (r) => r.fulfill({ body: "<body style='background:#111;color:#fff;display:grid;place-items:center;height:100vh;margin:0;font:20px sans-serif'>Kick player (mocked)</body>", contentType: "text/html" }));
   await ctx.addInitScript((lang) => { try { localStorage.setItem("tu1b_lang", lang); } catch {} }, s.lang);
   const p = await ctx.newPage();
@@ -47,8 +47,11 @@ for (const s of scenarios) {
     weekToday: await p.locator(".week-day.is-today").count(),
     ytCards: await p.locator("#content [role=tabpanel] li").count(),
   };
-  // clips tab
-  await p.locator("#content [role=tab]").nth(1).click(); await p.waitForTimeout(500);
+  // shorts + clips tabs
+  await p.locator("#content [role=tab]").nth(1).click(); await p.waitForTimeout(600);
+  await p.locator("#content").screenshot({ path: `${OUT}/${s.name}_shorts.png` });
+  r.shortsCards = await p.locator("#content [role=tabpanel] li").count();
+  await p.locator("#content [role=tab]").nth(2).click(); await p.waitForTimeout(500);
   await p.locator("#content").screenshot({ path: `${OUT}/${s.name}_clips.png` });
   // contact form validation (empty submit should be blocked by the browser)
   if (s.name === "desk_ar_live") {
