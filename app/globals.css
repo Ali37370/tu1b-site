@@ -121,6 +121,8 @@ main { overflow-x: clip; }
 .portal-ring { position: absolute; inset: 6%; border-radius: 50%; border: 1.5px solid color-mix(in srgb, var(--neon) 55%, transparent); border-top-color: transparent; border-left-color: transparent; animation: spin 14s linear infinite; filter: drop-shadow(0 0 8px var(--primary)); }
 .portal-ring-2 { inset: 1%; border: 1px dashed rgba(255,255,255,.18); animation-duration: 40s; animation-direction: reverse; filter: none; }
 .portal-word { position: absolute; inset-inline: 0; top: 4%; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(5rem, 22vw, 11rem); line-height: 1; color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,.12); letter-spacing: -.03em; user-select: none; }
+.portal-figure { -webkit-mask-image: radial-gradient(closest-side, #000 71%, transparent 72%), radial-gradient(ellipse 46% 30% at 52% 27%, #000 62%, transparent 100%); mask-image: radial-gradient(closest-side, #000 71%, transparent 72%), radial-gradient(ellipse 46% 30% at 52% 27%, #000 62%, transparent 100%); }
+.portal-img { filter: brightness(1.08) contrast(1.05) drop-shadow(0 20px 40px rgba(0,0,0,.6)); }
 .portal-floor { position: absolute; left: 10%; right: 10%; bottom: 2%; height: 12%; border-radius: 50%; background: radial-gradient(ellipse, color-mix(in srgb, var(--primary) 55%, transparent), transparent 70%); filter: blur(8px); }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes shimmer { to { background-position: 200% center; } }

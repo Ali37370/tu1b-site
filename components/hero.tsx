@@ -99,8 +99,10 @@ export function Hero() {
             <div className="portal-ring portal-ring-2" aria-hidden />
             <div className="portal-core" aria-hidden />
             <span className="portal-word" aria-hidden dir="ltr">{site.name}</span>
-            <div className="absolute inset-x-[-6%] bottom-[6%] top-[14%]">
-              <Image src={site.profileImage} alt={`${site.name} — ${site.realName[lang]}`} fill priority sizes="(max-width: 1024px) 92vw, 560px" className="object-contain object-bottom drop-shadow-[0_30px_60px_rgba(0,0,0,.7)]" />
+            <div className="portal-figure absolute inset-0">
+              <div className="absolute bottom-[11%] left-[-22%] aspect-[1000/643] w-[120%]">
+                <Image src={site.profileImage} alt={`${site.name} — ${site.realName[lang]}`} fill priority sizes="(max-width: 1024px) 110vw, 680px" className="portal-img object-contain object-bottom" />
+              </div>
             </div>
             <div className="portal-floor" aria-hidden />
           </motion.div>
