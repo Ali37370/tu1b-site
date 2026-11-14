@@ -14,6 +14,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Kick probe
+        run: mkdir -p ci && node scripts/kickprobe.mjs || true
       - name: Install
         run: npm install --no-audit --no-fund 2>&1 | tail -20
       - name: Build
