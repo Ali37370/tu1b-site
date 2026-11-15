@@ -32,7 +32,7 @@ export const useSiteData = () => useContext(DataContext);
 function mergeClips(saved: Clip[]): Clip[] {
   const seen = new Set(saved.map((c) => c.url.split("?")[0].toLowerCase()));
   const extra = site.featuredClips.filter((c) => !seen.has(c.url.toLowerCase()));
-  return [...saved, ...extra].slice(0, 12);
+  return [...saved, ...extra].slice(0, 40);
 }
 
 export function Providers({ children }: { children: ReactNode }) {
