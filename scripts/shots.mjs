@@ -27,7 +27,9 @@ for (const s of scenarios) {
   p.on("console", (m) => { if (m.type() === "error" || /hydrat/i.test(m.text())) errs.push("console: " + m.text().slice(0, 300)); });
   await p.goto(BASE + "/", { waitUntil: "load", timeout: 60000 });
   await p.waitForTimeout(1500);
+  await p.waitForTimeout(2500);
   await p.screenshot({ path: `${OUT}/${s.name}_hero.png` });
+  if (s.name === "desk_ar_live") { await p.mouse.move(1100, 300); await p.waitForTimeout(900); await p.screenshot({ path: `${OUT}/${s.name}_hero_tilt.png` }); }
   // scroll through to trigger reveals
   const H = await p.evaluate(() => document.body.scrollHeight);
   for (let y = 0; y < H; y += Math.floor(s.h * 0.7)) { await p.evaluate((yy) => window.scrollTo(0, yy), y); await p.waitForTimeout(250); }
@@ -44,6 +46,7 @@ for (const s of scenarios) {
     offenders: await p.evaluate(() => [...document.querySelectorAll("body *")].filter((e) => { const r = e.getBoundingClientRect(); return r.width > 0 && (r.right > innerWidth + 1 || r.left < -1); }).slice(0, 8).map((e) => e.tagName + "." + String(e.className).slice(0, 60) + " L" + Math.round(e.getBoundingClientRect().left) + " R" + Math.round(e.getBoundingClientRect().right))),
     dir: await p.evaluate(() => document.documentElement.dir),
     status: await p.locator("#live [role=status]").first().textContent(),
+    has3d: await p.evaluate(() => !!document.querySelector(".portal.has-3d canvas")),
     weekToday: await p.locator(".week-day.is-today").count(),
     ytCards: await p.locator("#content [role=tabpanel] li").count(),
   };

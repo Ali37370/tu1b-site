@@ -2,7 +2,10 @@
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown, Play, ScrollText } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useRef, type CSSProperties } from "react";
+
+const Hero3D = dynamic(() => import("./hero3d"), { ssr: false });
 import { site } from "@/lib/site";
 import { useLang } from "./providers";
 import { BrandIcon, StatusBadge } from "./ui";
@@ -98,6 +101,7 @@ export function Hero() {
             <div className="portal-ring" aria-hidden />
             <div className="portal-ring portal-ring-2" aria-hidden />
             <div className="portal-core" aria-hidden />
+            <Hero3D text={site.name} />
             <span className="portal-word" aria-hidden dir="ltr">{site.name}</span>
             <div className="portal-figure absolute inset-0">
               <div className="absolute bottom-[11%] left-[-22%] aspect-[1000/643] w-[120%]">

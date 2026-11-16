@@ -52,12 +52,19 @@ export function Reveal({ children, delay = 0, className = "" }: { children: Reac
 /** Glass card whose glow follows the pointer. */
 export function GlowCard({ children, className = "", glow }: { children: ReactNode; className?: string; glow?: string }) {
   function move(e: MouseEvent<HTMLDivElement>) {
-    const r = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
-    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
+    const el = e.currentTarget, r = el.getBoundingClientRect();
+    const x = e.clientX - r.left, y = e.clientY - r.top;
+    el.style.setProperty("--mx", `${x}px`);
+    el.style.setProperty("--my", `${y}px`);
+    el.style.setProperty("--ry", `${((x / r.width) - 0.5) * 12}deg`);
+    el.style.setProperty("--rx", `${(0.5 - (y / r.height)) * 10}deg`);
+  }
+  function leave(e: MouseEvent<HTMLDivElement>) {
+    e.currentTarget.style.setProperty("--rx", "0deg");
+    e.currentTarget.style.setProperty("--ry", "0deg");
   }
   return (
-    <div onMouseMove={move} className={`glass spot ${className}`} style={glow ? ({ ["--glow" as string]: glow } as CSSProperties) : undefined}>
+    <div onMouseMove={move} onMouseLeave={leave} className={`glass spot ${className}`} style={glow ? ({ ["--glow" as string]: glow } as CSSProperties) : undefined}>
       {children}
     </div>
   );

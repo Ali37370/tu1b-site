@@ -33,7 +33,15 @@ main { overflow-x: clip; }
     content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
     background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), color-mix(in srgb, var(--glow) 22%, transparent), transparent 60%);
   }
-  .group:hover .spot, .spot:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--glow) 55%, transparent); box-shadow: 0 24px 60px rgba(0,0,0,.45), 0 0 0 1px color-mix(in srgb, var(--glow) 25%, transparent), 0 0 40px color-mix(in srgb, var(--glow) 18%, transparent); }
+  .spot { transform-style: preserve-3d; }
+  .spot::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0; transition: opacity .35s;
+    background: linear-gradient(115deg, transparent 35%, rgba(255,255,255,.10) 50%, transparent 65%); background-size: 250% 100%; background-position: calc(var(--mx, 0px) * -.15) 0; }
+  .group:hover .spot::after, .spot:hover::after { opacity: 1; }
+  @media (hover: hover) and (pointer: fine) {
+    .group:hover .spot, .spot:hover { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(-4px); }
+    .group:hover .brand-tile, .group:hover .icon-tile, .group:hover .play-btn.static { transform: translateZ(40px) scale(1.06); }
+  }
+  .group:hover .spot, .spot:hover { border-color: color-mix(in srgb, var(--glow) 55%, transparent); box-shadow: 0 24px 60px rgba(0,0,0,.45), 0 0 0 1px color-mix(in srgb, var(--glow) 25%, transparent), 0 0 40px color-mix(in srgb, var(--glow) 18%, transparent); }
   .group:hover .spot::before, .spot:hover::before { opacity: 1; }
   @media (prefers-reduced-motion: reduce) { .group:hover .spot, .spot:hover { transform: none; } }
 
@@ -123,6 +131,9 @@ main { overflow-x: clip; }
 .portal-word { position: absolute; inset-inline: 0; top: 4%; text-align: center; font-family: var(--font-display); font-weight: 700; font-size: clamp(5rem, 22vw, 11rem); line-height: 1; color: transparent; -webkit-text-stroke: 1.5px rgba(255,255,255,.12); letter-spacing: -.03em; user-select: none; }
 .portal-figure { -webkit-mask-image: radial-gradient(closest-side, #000 71%, transparent 72%), radial-gradient(ellipse 46% 30% at 52% 27%, #000 62%, transparent 100%); mask-image: radial-gradient(closest-side, #000 71%, transparent 72%), radial-gradient(ellipse 46% 30% at 52% 27%, #000 62%, transparent 100%); }
 .portal-img { filter: brightness(1.08) contrast(1.05) drop-shadow(0 20px 40px rgba(0,0,0,.6)); }
+.hero3d { position: absolute; inset: -10%; pointer-events: none; }
+.hero3d canvas { width: 100% !important; height: 100% !important; display: block; }
+.portal.has-3d .portal-ring, .portal.has-3d .portal-word { display: none; }
 .portal-floor { position: absolute; left: 10%; right: 10%; bottom: 2%; height: 12%; border-radius: 50%; background: radial-gradient(ellipse, color-mix(in srgb, var(--primary) 55%, transparent), transparent 70%); filter: blur(8px); }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes shimmer { to { background-position: 200% center; } }
