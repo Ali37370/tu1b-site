@@ -1,0 +1,96 @@
+{
+  "desk_ar_live": {
+    "overflowX": 0,
+    "offenders": [
+      "SPAN.live-ticker-track L-2770 R135",
+      "SPAN. L-2746 R-2310",
+      "SPAN. L-2262 R-1826",
+      "SPAN. L-1778 R-1342",
+      "SPAN. L-1294 R-857",
+      "SPAN. L-809 R-373",
+      "SPAN. L-325 R111",
+      "DIV.orb orb-a L-148 R498"
+    ],
+    "dir": "rtl",
+    "status": "LIVE · مباشر الحين",
+    "has3d": true,
+    "weekToday": 1,
+    "ytCards": 3,
+    "shortsCards": 3,
+    "form": "وصل طلبك. بنرد عليك على الإيميل قريب.",
+    "modal": 1,
+    "errors": []
+  },
+  "mob_ar_off": {
+    "overflowX": 0,
+    "offenders": [
+      "DIV.cursor-ring L-117 R-83",
+      "DIV.cursor-dot L-3 R3",
+      "DIV.orb orb-a L-159 R451",
+      "DIV.orb orb-b L123 R569",
+      "DIV.orb orb-c L153 R397",
+      "DIV.hero3d L-20 R410",
+      "CANVAS. L-20 R410",
+      "DIV.absolute bottom-[11%] left-[-22%] aspect-[1000/643] w-[120%] L-63 R367"
+    ],
+    "dir": "rtl",
+    "status": "OFFLINE · غير متصل",
+    "has3d": true,
+    "weekToday": 1,
+    "ytCards": 3,
+    "shortsCards": 3,
+    "menuOpen": 1,
+    "errors": []
+  },
+  "mob_en_noapi": {
+    "overflowX": 0,
+    "offenders": [
+      "DIV.cursor-ring L-117 R-83",
+      "DIV.cursor-dot L-3 R3",
+      "DIV.orb orb-a L-58 R550",
+      "DIV.orb orb-b L-105 R345",
+      "DIV.orb orb-c L152 R395",
+      "DIV.hero3d L-20 R410",
+      "CANVAS. L-20 R410",
+      "DIV.absolute bottom-[11%] left-[-22%] aspect-[1000/643] w-[120%] L-63 R367"
+    ],
+    "dir": "ltr",
+    "status": "Couldn't check",
+    "has3d": true,
+    "weekToday": 0,
+    "ytCards": 0,
+    "shortsCards": 0,
+    "menuOpen": 1,
+    "errors": [
+      "console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "console: Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "console: Failed to load resource: the server responded with a status of 404 (Not Found)"
+    ]
+  },
+  "tab_ar_off": {
+    "overflowX": 0,
+    "offenders": [
+      "DIV.cursor-ring L-117 R-83",
+      "DIV.cursor-dot L-3 R3",
+      "DIV.orb orb-a L-149 R494",
+      "DIV.orb orb-b L524 R934",
+      "DIV.pointer-events-none absolute -top-32 end-[-10%] h-72 w-72 ro L-52 R236",
+      "OL.flex w-full L1258 R1670",
+      "LI.w-full shrink-0 px-1 L1258 R1670",
+      "DIV.glass p-6 transition-opacity duration-500 md:p-8 opacity-40 L1262 R1666"
+    ],
+    "dir": "rtl",
+    "status": "OFFLINE · غير متصل",
+    "has3d": true,
+    "weekToday": 0,
+    "ytCards": 0,
+    "shortsCards": 0,
+    "errors": []
+  },
+  "introGone": true,
+  "tahdeer": {
+    "status": 200,
+    "title": "TU1B"
+  }
+}

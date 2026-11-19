@@ -1,0 +1,180 @@
+npm warn deprecated glob@8.1.0: Glob versions prior to v9 are no longer supported
+​
+Netlify Build                                                 
+────────────────────────────────────────────────────────────────
+​
+❯ Version
+  @netlify/build 29.58.0
+​
+❯ Flags
+  dry: false
+  offline: true
+​
+❯ Current directory
+  /home/runner/work/tu1b-site/tu1b-site
+​
+❯ Config file
+  /home/runner/work/tu1b-site/tu1b-site/netlify.toml
+​
+❯ Context
+  production
+​
+❯ Using Next.js Runtime - v5.16.8
+​
+@netlify/plugin-nextjs (onPreBuild event)                     
+────────────────────────────────────────────────────────────────
+​
+​
+(@netlify/plugin-nextjs onPreBuild completed in 5ms)
+​
+build.command from netlify.toml                               
+────────────────────────────────────────────────────────────────
+​
+$ npm run build
+
+> build
+> next build
+
+  ▲ Next.js 14.2.35
+
+   Creating an optimized production build ...
+request to https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap failed, reason: 
+
+Retrying 1/3...
+request to https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJuktqUYLkn8BJ.woff2 failed, reason: 
+
+Retrying 1/3...
+request to https://fonts.gstatic.com/s/outfit/v15/QGYvz_MVcBeNP4NJtEtqUYLknw.woff2 failed, reason: 
+
+Retrying 1/3...
+ ✓ Compiled successfully
+   Skipping linting
+   Checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/11) ...
+   Generating static pages (2/11) 
+   Generating static pages (5/11) 
+   Generating static pages (8/11) 
+ ✓ Generating static pages (11/11)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    67.8 kB         162 kB
+├ ○ /_not-found                          873 B          88.3 kB
+├ ○ /apple-icon.png                      0 B                0 B
+├ ○ /icon.png                            0 B                0 B
+├ ○ /inquiries                           1.15 kB        88.6 kB
+├ ○ /opengraph-image.png                 0 B                0 B
+├ ○ /robots.txt                          0 B                0 B
+├ ○ /sitemap.xml                         0 B                0 B
+└ ○ /twitter-image.png                   0 B                0 B
++ First Load JS shared by all            87.4 kB
+  ├ chunks/117-4f5b424f20efdcae.js       31.7 kB
+  ├ chunks/fd9d1056-b11b2651f33aae7f.js  53.6 kB
+  └ other shared chunks (total)          2.07 kB
+
+
+○  (Static)  prerendered as static content
+
+​
+(build.command completed in 19.8s)
+​
+@netlify/plugin-nextjs (onBuild event)                        
+────────────────────────────────────────────────────────────────
+​
+​
+(@netlify/plugin-nextjs onBuild completed in 444ms)
+​
+Functions bundling                                            
+────────────────────────────────────────────────────────────────
+​
+Packaging Functions from .netlify/functions-internal directory:
+ - ___netlify-server-handler/___netlify-server-handler.mjs
+​
+Packaging Functions from netlify/functions directory:
+ - auth-callback.mjs
+ - auth-login.mjs
+ - auth-logout.mjs
+ - auth-pass.mjs
+ - contact.mjs
+ - data.mjs
+ - img-delete.mjs
+ - img.mjs
+ - inquiries.mjs
+ - live.mjs
+ - me.mjs
+ - puzzle.mjs
+ - save.mjs
+ - scores.mjs
+ - team-pass.mjs
+ - team.mjs
+ - upload.mjs
+ - youtube.mjs
+​
+​
+(Functions bundling completed in 1.1s)
+​
+Edge Functions bundling                                       
+────────────────────────────────────────────────────────────────
+​
+​
+(Edge Functions bundling completed in 3.2s)
+​
+@netlify/plugin-nextjs (onPostBuild event)                    
+────────────────────────────────────────────────────────────────
+​
+​
+(@netlify/plugin-nextjs onPostBuild completed in 3ms)
+​
+@netlify/plugin-nextjs (onSuccess event)                      
+────────────────────────────────────────────────────────────────
+​
+​
+(@netlify/plugin-nextjs onSuccess completed in 165ms)
+​
+@netlify/plugin-nextjs (onEnd event)                          
+────────────────────────────────────────────────────────────────
+​
+​
+(@netlify/plugin-nextjs onEnd completed in 2ms)
+​
+Save updated config                                           
+────────────────────────────────────────────────────────────────
+​
+​
+(options.onEnd completed in 2ms)
+​
+Netlify Build Complete                                        
+────────────────────────────────────────────────────────────────
+​
+(Netlify Build completed in 25.7s)
+netlify_code=0
+total 40
+drwxr-xr-x  8 runner runner 4096 Nov 19 10:07 .
+drwxr-xr-x 14 runner runner 4096 Nov 19 10:07 ..
+drwxr-xr-x  3 runner runner 4096 Nov 19 10:06 deploy
+drwxr-xr-x  3 runner runner 4096 Nov 19 10:06 edge-functions
+drwxr-xr-x  2 runner runner 4096 Nov 19 10:07 edge-functions-dist
+-rw-r--r--  1 runner runner 2137 Nov 19 10:07 edge-functions-import-map.json
+drwxr-xr-x  2 runner runner 4096 Nov 19 10:06 functions
+drwxr-xr-x  3 runner runner 4096 Nov 19 10:06 functions-internal
+-rw-r--r--  1 runner runner 1611 Nov 19 10:07 netlify.toml
+drwxr-xr-x  4 runner runner 4096 Nov 19 10:06 static
+.netlify
+.netlify/edge-functions-dist
+.netlify/functions-internal
+.netlify/functions-internal/___netlify-server-handler
+.netlify/functions-internal/___netlify-server-handler/.netlify
+.netlify/functions-internal/___netlify-server-handler/.next
+.netlify/functions-internal/___netlify-server-handler/node_modules
+.netlify/static
+.netlify/static/_next
+.netlify/static/_next/static
+.netlify/static/badges
+.netlify/functions
+.netlify/deploy
+.netlify/deploy/v1
+.netlify/deploy/v1/blobs
+.netlify/edge-functions
+.netlify/edge-functions/.vendor
