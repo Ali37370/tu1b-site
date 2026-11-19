@@ -15,8 +15,8 @@ export function Legends() {
   const { t, lang } = useLang();
   const { legends, boards, loaded } = useSiteData();
   const top = legends.slice(0, 3);
-  // podium order on wide screens: 2nd, 1st, 3rd
-  const order = top.length === 3 ? [1, 0, 2] : top.map((_, i) => i);
+  // natural order on phones (1st first); md:order-* arranges 2nd · 1st · 3rd on wide screens
+  const order = top.map((_, i) => i);
 
   return (
     <Section id="legends" kicker={t.legends.kicker} title={t.legends.title} lead={t.legends.lead}>

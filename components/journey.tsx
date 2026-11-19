@@ -1,6 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import { motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { useRef, useState } from "react";
 import { site } from "@/lib/site";
 import { useLang } from "./providers";
@@ -16,7 +16,6 @@ export function Journey() {
   const items = site.achievements;
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
   const dir = lang === "ar" ? 1 : -1;
-  const x = useTransform(scrollYProgress, [0, 1], ["0%", `${dir * (items.length - 1) * 100}%`]);
   const [active, setActive] = useState(0);
   useMotionValueEvent(scrollYProgress, "change", (v) => setActive(Math.min(items.length - 1, Math.max(0, Math.round(v * (items.length - 1))))));
 
@@ -35,7 +34,7 @@ export function Journey() {
               <span className="journey-year" aria-hidden>{items[active].year[lang]}</span>
             </div>
             <div className="overflow-hidden">
-              <motion.ol className="flex" style={{ x }}>
+              <motion.ol className="flex w-full" animate={{ x: `${dir * active * 100}%` }} transition={{ type: "spring", stiffness: 120, damping: 20 }}>
                 {items.map((a, i) => (
                   <li key={i} className="w-full shrink-0 px-1">
                     <div className={`glass p-6 transition-opacity duration-500 md:p-8 ${i === active ? "opacity-100" : "opacity-40"}`}>

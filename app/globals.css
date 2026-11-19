@@ -157,9 +157,9 @@ main { overflow-x: clip; }
 .intro3d-word span { display: inline-block; background: linear-gradient(180deg, #fff 30%, var(--neon) 70%, var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 30px color-mix(in srgb, var(--primary) 70%, transparent)); }
 .intro3d-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,.08); }
 .intro3d-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--secondary), var(--neon)); box-shadow: 0 0 16px var(--primary); }
-.intro3d-num { position: absolute; bottom: 22px; inset-inline-end: 28px; font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 9vw, 6rem); line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+.intro3d-num { position: absolute; bottom: 22px; right: 28px; direction: ltr; font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 9vw, 6rem); line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
 .intro3d-num small { font-size: .4em; color: var(--neon); }
-.intro3d-label { position: absolute; bottom: 30px; inset-inline-start: 28px; color: #a1a1aa; font-size: .9rem; letter-spacing: .1em; }
+.intro3d-label { position: absolute; bottom: 30px; left: 28px; color: #a1a1aa; font-size: .9rem; letter-spacing: .1em; }
 
 /* cursor */
 html.has-cursor, html.has-cursor a, html.has-cursor button { cursor: none; }

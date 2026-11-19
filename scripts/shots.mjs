@@ -92,7 +92,7 @@ for (const s of scenarios) {
   await p.goto(BASE + "/", { waitUntil: "domcontentloaded" });
   await p.waitForTimeout(900);
   await p.screenshot({ path: `${OUT}/intro.png` });
-  await p.waitForTimeout(3000);
+  await p.waitForTimeout(4200);
   report.introGone = (await p.locator(".intro3d").count()) === 0;
   await c.close();
 }

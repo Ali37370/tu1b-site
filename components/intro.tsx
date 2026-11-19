@@ -20,7 +20,7 @@ export function Intro() {
     let loaded = document.readyState === "complete";
     const onLoad = () => { loaded = true; };
     window.addEventListener("load", onLoad);
-    const cap = setTimeout(() => { loaded = true; }, 3500);
+    const cap = setTimeout(() => { loaded = true; }, 2500);
     let p = 0, raf = 0;
     const tick = (now: number) => {
       const target = loaded ? 100 : Math.min(90, (now - t0) / 18);
