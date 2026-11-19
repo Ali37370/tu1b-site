@@ -5,7 +5,9 @@ const BASE = process.env.BASE || "http://localhost:3000";
 const OUT = "ci";
 fs.mkdirSync(OUT, { recursive: true });
 const report = {};
-const sched = { schedule: [{ d: 0, t: "21:00" }, { d: 2, t: "21:00" }, { d: 4, t: "22:30" }, { d: 5, t: "20:00" }], clips: [{ url: "https://kick.com/tu1b/clips/test1", title: "TEST clip one", views: 1200 }, { url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", title: "TEST clip two", views: 0 }] };
+const names = ["Nora_x", "abu_fahad", "Saad99", "ريم", "khalid_k", "M7md", "Lulu", "Yousef", "faisal_tt", "Hamad"];
+const photos = Array.from({ length: 8 }, (_, b) => ({ g: "b" + b, full: "p1.jpg", thumb: "t1.jpg", names: names.filter((_, i) => (b + i * 3) % (i + 2) !== 0 || i < 2) }));
+const sched = { photos, schedule: [{ d: 0, t: "21:00" }, { d: 2, t: "21:00" }, { d: 4, t: "22:30" }, { d: 5, t: "20:00" }], clips: [{ url: "https://kick.com/tu1b/clips/test1", title: "TEST clip one", views: 1200 }, { url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", title: "TEST clip two", views: 0 }] };
 const yt = { channel: "https://www.youtube.com/@TU1B1", videos: [{ id: "dQw4w9WgXcQ", title: "TEST video one", published: "2026-10-01T00:00:00Z", views: 1000 }, { id: "9bZkp7q19f0", title: "TEST video two", published: "2026-09-01T00:00:00Z", views: 0 }, { id: "kJQP7kiw5Fk", title: "TEST video three", published: "2026-08-01T00:00:00Z", views: 0 }] };
 const scenarios = [
   { name: "desk_ar_live", w: 1440, h: 900, lang: "ar", live: { live: true, viewers: 312, title: "TEST — live title", category: "Just Chatting", followers: 13600, checked: new Date().toISOString() }, data: sched, yt },
@@ -21,7 +23,7 @@ for (const s of scenarios) {
   if (s.data) await ctx.route("**/api/data", (r) => r.fulfill({ json: s.data }));
   if (s.yt) await ctx.route("**/api/youtube**", (r) => r.fulfill({ json: r.request().url().includes("shorts") ? { ...s.yt, channel: "https://www.youtube.com/@TU1BShorts" } : s.yt }));
   await ctx.route("https://player.kick.com/**", (r) => r.fulfill({ body: "<body style='background:#111;color:#fff;display:grid;place-items:center;height:100vh;margin:0;font:20px sans-serif'>Kick player (mocked)</body>", contentType: "text/html" }));
-  await ctx.addInitScript((lang) => { try { localStorage.setItem("tu1b_lang", lang); } catch {} }, s.lang);
+  await ctx.addInitScript((lang) => { try { localStorage.setItem("tu1b_lang", lang); sessionStorage.setItem("tu1b_intro2", "1"); } catch {} }, s.lang);
   const p = await ctx.newPage();
   p.on("pageerror", (e) => errs.push("pageerror: " + e.message));
   p.on("console", (m) => { if (m.type() === "error" || /hydrat/i.test(m.text())) errs.push("console: " + m.text().slice(0, 300)); });
@@ -34,11 +36,14 @@ for (const s of scenarios) {
   const H = await p.evaluate(() => document.body.scrollHeight);
   for (let y = 0; y < H; y += Math.floor(s.h * 0.7)) { await p.evaluate((yy) => window.scrollTo(0, yy), y); await p.waitForTimeout(250); }
   await p.waitForTimeout(800);
-  for (const id of ["live", "socials", "about", "content", "schedule", "sponsor"]) {
+  for (const id of ["live", "socials", "about", "legends", "content", "schedule", "sponsor"]) {
     const el = p.locator("#" + id);
     await el.scrollIntoViewIfNeeded(); await p.waitForTimeout(500);
     await el.screenshot({ path: `${OUT}/${s.name}_${id}.png` });
   }
+  // journey: scroll to its middle and screenshot the pinned view
+  const jt = await p.evaluate(() => { const el = document.getElementById("journey"); return el ? el.offsetTop + el.offsetHeight * 0.45 : 0; });
+  if (jt) { await p.evaluate((y) => window.scrollTo(0, y), jt); await p.waitForTimeout(1500); await p.screenshot({ path: `${OUT}/${s.name}_journey.png` }); }
   await p.locator("footer").scrollIntoViewIfNeeded(); await p.waitForTimeout(600);
   await p.screenshot({ path: `${OUT}/${s.name}_footer.png` });
   const r = {
@@ -79,6 +84,17 @@ for (const s of scenarios) {
   r.errors = errs;
   report[s.name] = r;
   await ctx.close();
+}
+// intro on a fresh visit
+{
+  const c = await b.newContext({ viewport: { width: 1280, height: 800 } });
+  const p = await c.newPage();
+  await p.goto(BASE + "/", { waitUntil: "domcontentloaded" });
+  await p.waitForTimeout(900);
+  await p.screenshot({ path: `${OUT}/intro.png` });
+  await p.waitForTimeout(3000);
+  report.introGone = (await p.locator(".intro3d").count()) === 0;
+  await c.close();
 }
 // old features page still served
 const p2 = await (await b.newContext({ viewport: { width: 390, height: 844 } })).newPage();

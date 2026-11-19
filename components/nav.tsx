@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Languages, Menu, Play, X } from "lucide-react";
+import { Languages, Menu, Play, Volume2, VolumeX, X } from "lucide-react";
+import { loadSfxPref, setSfx, wireSfx } from "@/lib/sfx";
 import { site } from "@/lib/site";
 import { useLang, useLive } from "./providers";
 
@@ -10,6 +11,9 @@ export function Nav() {
   const { status } = useLive();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [sound, setSound] = useState(false);
+  useEffect(() => { setSound(loadSfxPref()); return wireSfx(); }, []);
+  const toggleSound = () => { const v = !sound; setSound(v); setSfx(v); };
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 24);
@@ -30,6 +34,7 @@ export function Nav() {
     { href: "#live", label: t.nav.live },
     { href: "#socials", label: t.nav.socials },
     { href: "#about", label: t.nav.about },
+    { href: "#legends", label: t.nav.legends },
     { href: "#content", label: t.nav.content },
     { href: "#schedule", label: t.nav.schedule },
     { href: "#sponsor", label: t.nav.sponsor },
@@ -54,6 +59,9 @@ export function Nav() {
             </li>
           </ul>
           <div className="flex items-center gap-2">
+            <button onClick={toggleSound} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-200 transition hover:border-primary hover:text-white" aria-label={sound ? t.sfx.off : t.sfx.on} aria-pressed={sound} title={sound ? t.sfx.off : t.sfx.on}>
+              {sound ? <Volume2 className="h-4 w-4" aria-hidden /> : <VolumeX className="h-4 w-4" aria-hidden />}
+            </button>
             <button onClick={toggle} className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 text-sm font-semibold text-zinc-200 transition hover:border-primary hover:text-white" aria-label={t.lang}>
               <Languages className="h-4 w-4" aria-hidden />
               <span>{t.lang}</span>

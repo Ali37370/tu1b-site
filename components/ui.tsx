@@ -25,7 +25,7 @@ export function Section({ id, kicker, title, lead, children, className = "" }: {
         <Reveal>
           <header className="mb-10 md:mb-14">
             {kicker && <p className="kicker mb-3">{kicker}</p>}
-            <h2 className="font-display text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl">{title}</h2>
+            <SplitTitle text={title} className="font-display text-3xl font-bold leading-tight text-white sm:text-4xl md:text-5xl" />
             {lead && <p className="mt-4 max-w-2xl text-base leading-relaxed text-zinc-400 md:text-lg">{lead}</p>}
           </header>
         </Reveal>
@@ -35,12 +35,47 @@ export function Section({ id, kicker, title, lead, children, className = "" }: {
   );
 }
 
+/** Title that assembles word by word (letters for Latin words; Arabic stays joined). */
+export function SplitTitle({ text, className = "" }: { text: string; className?: string }) {
+  const words = text.split(" ");
+  let n = 0;
+  return (
+    <h2 className={className} aria-label={text}>
+      {words.map((w, i) => {
+        const latin = /^[\x00-\x7F]+$/.test(w);
+        const parts = latin ? w.split("") : [w];
+        return (
+          <span key={i} aria-hidden className="inline-block whitespace-nowrap" style={{ perspective: 600 }}>
+            {parts.map((ch, j) => {
+              const d = n++ * (latin ? 0.03 : 0.08);
+              return (
+                <motion.span
+                  key={j}
+                  className="inline-block"
+                  style={{ transformOrigin: "50% 100%" }}
+                  initial={{ opacity: 0, y: "0.6em", rotateX: -90 }}
+                  whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+                  viewport={{ once: true, margin: "0px 0px -10% 0px" }}
+                  transition={{ delay: d, duration: 0.7, ease: [0.2, 0.8, 0.2, 1] }}
+                >
+                  {ch}
+                </motion.span>
+              );
+            })}
+            {i < words.length - 1 ? "\u00a0" : ""}
+          </span>
+        );
+      })}
+    </h2>
+  );
+}
+
 export function Reveal({ children, delay = 0, className = "" }: { children: ReactNode; delay?: number; className?: string }) {
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 36, scale: 0.97, filter: "blur(6px)" }}
+      whileInView={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
       viewport={{ once: true, margin: "0px 0px -10% 0px" }}
       transition={{ duration: 0.7, delay, ease: [0.2, 0.8, 0.2, 1] }}
     >

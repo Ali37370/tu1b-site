@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowLeft, ArrowRight, Gamepad2, ScrollText, Trophy, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, Gamepad2, ScrollText, Users } from "lucide-react";
 import { site } from "@/lib/site";
 import { useLang, useLive } from "./providers";
 import { BrandIcon, GlowCard, Reveal, Section, fmt } from "./ui";
@@ -60,18 +60,6 @@ export function About() {
                 <span className="text-xs text-zinc-400 sm:text-sm">{t.about.platforms}</span>
               </div>
             </div>
-          </Reveal>
-
-          <Reveal delay={0.15}>
-            <h3 className="mb-5 mt-12 flex items-center gap-2 text-xl font-bold text-white"><Trophy className="h-5 w-5 text-neon" aria-hidden />{t.about.journey}</h3>
-            <ol className="timeline">
-              {site.achievements.map((a, i) => (
-                <motion.li key={i} initial={{ opacity: 0, x: lang === "ar" ? 20 : -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }} className="timeline-item">
-                  <span className="text-sm font-bold text-neon">{a.year[lang]}</span>
-                  <p className="mt-1 font-semibold text-white">{a.title[lang]}</p>
-                </motion.li>
-              ))}
-            </ol>
           </Reveal>
 
           {site.interests.length > 0 && (

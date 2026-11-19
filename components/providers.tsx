@@ -24,8 +24,30 @@ export const useLive = () => useContext(LiveContext);
 
 /* ---------------- site data saved from the dashboard ---------------- */
 export type Clip = { url: string; title: string; views: number };
-export type SiteData = { schedule: { d: number; t: string }[]; clips: Clip[]; loaded: boolean };
-const DataContext = createContext<SiteData>({ schedule: site.schedule, clips: [], loaded: false });
+export type Legend = { name: string; count: number };
+export type SiteData = { schedule: { d: number; t: string }[]; clips: Clip[]; legends: Legend[]; boards: number; loaded: boolean };
+
+/** count distinct roll-call boards per name (same rule as the attendance page) */
+function computeLegends(photos: unknown): { legends: Legend[]; boards: number } {
+  if (!Array.isArray(photos)) return { legends: [], boards: 0 };
+  const per = new Map<string, { name: string; groups: Set<string> }>();
+  const groups = new Set<string>();
+  photos.forEach((p: { g?: string; names?: unknown }, i: number) => {
+    const g = p && p.g ? String(p.g) : "p" + i;
+    groups.add(g);
+    (Array.isArray(p?.names) ? p.names : []).forEach((n: unknown) => {
+      const name = String(n || "").trim().replace(/^@/, "");
+      const k = name.toLowerCase();
+      if (!k) return;
+      const e = per.get(k) || { name, groups: new Set<string>() };
+      e.groups.add(g);
+      per.set(k, e);
+    });
+  });
+  const legends = [...per.values()].map((e) => ({ name: e.name, count: e.groups.size })).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).slice(0, 10);
+  return { legends, boards: groups.size };
+}
+const DataContext = createContext<SiteData>({ schedule: site.schedule, clips: [], legends: [], boards: 0, loaded: false });
 export const useSiteData = () => useContext(DataContext);
 
 /** dashboard clips first, then the featured defaults (no duplicates) */
@@ -38,7 +60,7 @@ function mergeClips(saved: Clip[]): Clip[] {
 export function Providers({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("ar");
   const [live, setLive] = useState<LiveState>(initialLive);
-  const [data, setData] = useState<SiteData>({ schedule: site.schedule, clips: [], loaded: false });
+  const [data, setData] = useState<SiteData>({ schedule: site.schedule, clips: [], legends: [], boards: 0, loaded: false });
 
   useEffect(() => {
     try {
@@ -95,6 +117,7 @@ export function Providers({ children }: { children: ReactNode }) {
         setData({
           schedule: d && Array.isArray(d.schedule) && d.schedule.length ? d.schedule : site.schedule,
           clips: mergeClips(d && Array.isArray(d.clips) ? d.clips : []),
+          ...computeLegends(d && d.photos),
           loaded: true,
         });
       })

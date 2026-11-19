@@ -147,3 +147,54 @@ main { overflow-x: clip; }
   .orb, .particle, .portal-ring, .footer-logo span, .logo-mark, .btn-live { animation: none !important; }
   .particle { opacity: .4; }
 }
+
+/* ================= wow pack ================= */
+/* intro */
+.intro3d { position: fixed; inset: 0; z-index: 200; background: radial-gradient(circle at 50% 45%, #1a0b33, #07060b 65%); display: grid; place-items: center; overflow: hidden; }
+.intro3d-grid { position: absolute; inset: -50% -50% 0; background-image: linear-gradient(rgba(168,85,247,.25) 1px, transparent 1px), linear-gradient(90deg, rgba(168,85,247,.25) 1px, transparent 1px); background-size: 60px 60px; transform: perspective(500px) rotateX(62deg) translateY(30%); mask-image: linear-gradient(transparent, #000 40%, transparent 85%); -webkit-mask-image: linear-gradient(transparent, #000 40%, transparent 85%); animation: gridrun 2.4s linear infinite; }
+@keyframes gridrun { to { background-position: 0 60px; } }
+.intro3d-word { position: relative; display: flex; perspective: 900px; font-family: var(--font-display); font-weight: 800; font-size: clamp(5rem, 22vw, 14rem); line-height: 1; letter-spacing: -.04em; }
+.intro3d-word span { display: inline-block; background: linear-gradient(180deg, #fff 30%, var(--neon) 70%, var(--primary)); -webkit-background-clip: text; background-clip: text; color: transparent; filter: drop-shadow(0 0 30px color-mix(in srgb, var(--primary) 70%, transparent)); }
+.intro3d-bar { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: rgba(255,255,255,.08); }
+.intro3d-bar i { display: block; height: 100%; background: linear-gradient(90deg, var(--secondary), var(--neon)); box-shadow: 0 0 16px var(--primary); }
+.intro3d-num { position: absolute; bottom: 22px; inset-inline-end: 28px; font-family: var(--font-display); font-weight: 800; font-size: clamp(3rem, 9vw, 6rem); line-height: 1; color: #fff; font-variant-numeric: tabular-nums; }
+.intro3d-num small { font-size: .4em; color: var(--neon); }
+.intro3d-label { position: absolute; bottom: 30px; inset-inline-start: 28px; color: #a1a1aa; font-size: .9rem; letter-spacing: .1em; }
+
+/* cursor */
+html.has-cursor, html.has-cursor a, html.has-cursor button { cursor: none; }
+html.has-cursor input, html.has-cursor textarea, html.has-cursor select { cursor: auto; }
+.cursor-dot, .cursor-ring { position: fixed; left: 0; top: 0; z-index: 300; pointer-events: none; border-radius: 50%; display: none; }
+html.has-cursor .cursor-dot, html.has-cursor .cursor-ring { display: block; }
+.cursor-dot { width: 6px; height: 6px; margin: -3px 0 0 -3px; background: #fff; box-shadow: 0 0 10px var(--neon); }
+.cursor-ring { width: 34px; height: 34px; margin: -17px 0 0 -17px; border: 1.5px solid var(--neon); box-shadow: 0 0 18px color-mix(in srgb, var(--primary) 60%, transparent); transition: width .25s, height .25s, margin .25s, background .25s, border-color .25s; }
+.cursor-ring.is-hot { width: 58px; height: 58px; margin: -29px 0 0 -29px; background: color-mix(in srgb, var(--primary) 18%, transparent); border-color: var(--primary); }
+.cursor-ring.is-down { width: 24px; height: 24px; margin: -12px 0 0 -12px; }
+.cursor-star { position: fixed; z-index: 299; pointer-events: none; width: 6px; height: 6px; margin: -3px 0 0 -3px; background: var(--neon); clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); animation: star .7s ease-out forwards; }
+@keyframes star { to { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(.2) rotate(90deg); } }
+
+/* live mode */
+html.is-live { --primary: #f43f5e !important; --secondary: #be123c !important; --neon: #fda4af !important; }
+html.is-live body { background-image: radial-gradient(60% 40% at 50% 0%, rgba(244,63,94,.12), transparent); }
+.live-ticker { position: fixed; inset-inline: 0; top: 64px; z-index: 45; display: block; overflow: hidden; height: 34px; background: linear-gradient(90deg, #be123c, #f43f5e, #be123c); box-shadow: 0 0 30px rgba(244,63,94,.55); color: #fff; font-weight: 800; font-size: .85rem; white-space: nowrap; }
+.live-ticker-track { display: inline-flex; gap: 3rem; padding-inline: 1.5rem; line-height: 34px; animation: ticker 28s linear infinite; direction: ltr; }
+@keyframes ticker { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .live-ticker-track { animation: none; } .intro3d-grid { animation: none; } }
+
+/* journey */
+.trophy3d { position: absolute; inset: 0; }
+.trophy3d canvas { width: 100% !important; height: 100% !important; display: block; }
+.journey-year { position: absolute; inset-inline: 0; bottom: -4%; text-align: center; font-family: var(--font-display); font-weight: 800; font-size: clamp(2.5rem, 8vw, 5rem); line-height: 1; color: transparent; -webkit-text-stroke: 1px rgba(255,255,255,.25); pointer-events: none; }
+
+/* hall of fame podium */
+.podium { display: flex; flex-direction: column; align-items: stretch; }
+.podium-card { position: relative; display: flex; flex-direction: column; align-items: center; gap: .35rem; padding: 1.4rem 1rem 1.2rem; border-radius: 1.5rem 1.5rem 0 0; border: 1px solid var(--line); border-bottom: 0; background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02)); text-align: center; }
+.podium-icon { width: 2rem; height: 2rem; color: var(--tier); filter: drop-shadow(0 0 12px var(--tier)); }
+.podium-rank { font-size: .8rem; font-weight: 700; color: var(--tier); letter-spacing: .05em; }
+.podium-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: #fff; }
+.podium-count { font-size: .85rem; color: #a1a1aa; }
+.podium-count b { color: #fff; font-size: 1.05rem; }
+.podium-step { display: grid; place-items: center; border-radius: 0 0 1.25rem 1.25rem; background: linear-gradient(180deg, color-mix(in srgb, var(--tier) 55%, #000), color-mix(in srgb, var(--tier) 15%, #000)); box-shadow: inset 0 1px 0 rgba(255,255,255,.25), 0 20px 40px rgba(0,0,0,.4), 0 0 40px color-mix(in srgb, var(--tier) 25%, transparent); }
+.podium-step span { font-family: var(--font-display); font-weight: 800; font-size: 3.5rem; color: rgba(255,255,255,.85); text-shadow: 0 0 20px var(--tier); }
+.tier-gold { --tier: #f5c542; } .tier-silver { --tier: #cbd5e1; } .tier-bronze { --tier: #d08a4a; }
+.tier-gold .podium-card { box-shadow: 0 0 50px rgba(245,197,66,.18); border-color: rgba(245,197,66,.4); }

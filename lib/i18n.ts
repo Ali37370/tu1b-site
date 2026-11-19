@@ -2,7 +2,7 @@ export type Lang = "ar" | "en";
 
 export const dict = {
   ar: {
-    nav: { live: "البث", socials: "الحسابات", about: "عني", content: "المحتوى", schedule: "الجدول", sponsor: "الشراكات", board: "التحضير والألعاب", menu: "القائمة", close: "إغلاق" },
+    nav: { live: "البث", socials: "الحسابات", about: "عني", legends: "لوحة الشرف", journey: "المشوار", content: "المحتوى", schedule: "الجدول", sponsor: "الشراكات", board: "التحضير والألعاب", menu: "القائمة", close: "إغلاق" },
     hero: {
       kicker: "ستريمر كيك · السعودية",
       watch: "شاهد البث",
@@ -85,11 +85,24 @@ export const dict = {
       err: "صار خطأ. تأكد من البيانات وجرّب مرة ثانية.",
       rate: "أرسلت طلبات كثير. جرّب بعد شوي.",
     },
+    intro: { loading: "جاري التحميل" },
+    sfx: { on: "تشغيل الأصوات", off: "إيقاف الأصوات" },
+    ticker: { live: "مباشر الحين", viewers: "مشاهد", join: "ادخل البث" },
+    journey: { kicker: "المشوار", title: "من البداية لين اليوم", lead: "محطات تيوب، كل وحدة بكأسها." },
+    legends: {
+      kicker: "لوحة الشرف",
+      title: "أساطير التحضير",
+      lead: "أكثر الناس حضوراً في بثوث تيوب. اسمك هنا؟",
+      boards: "حضور",
+      find: "دوّر اسمك",
+      empty: "اللوحة تتعبى أول ما تنضاف سبورات التحضير.",
+      ranks: ["الأول", "الثاني", "الثالث"],
+    },
     footer: { rights: "جميع الحقوق محفوظة", by: "تصميم وتطوير", top: "للأعلى" },
     lang: "English",
   },
   en: {
-    nav: { live: "Live", socials: "Socials", about: "About", content: "Content", schedule: "Schedule", sponsor: "Partners", board: "Roll call & games", menu: "Menu", close: "Close" },
+    nav: { live: "Live", socials: "Socials", about: "About", legends: "Hall of fame", journey: "Journey", content: "Content", schedule: "Schedule", sponsor: "Partners", board: "Roll call & games", menu: "Menu", close: "Close" },
     hero: {
       kicker: "Kick streamer · Saudi Arabia",
       watch: "Watch live",
@@ -171,6 +184,19 @@ export const dict = {
       ok: "Got it — we'll reply by email soon.",
       err: "Something went wrong. Check your details and try again.",
       rate: "Too many requests. Try again in a bit.",
+    },
+    intro: { loading: "Loading" },
+    sfx: { on: "Turn sounds on", off: "Turn sounds off" },
+    ticker: { live: "Live now", viewers: "viewers", join: "Join stream" },
+    journey: { kicker: "Journey", title: "From day one to today", lead: "TU1B's milestones — each with its own trophy." },
+    legends: {
+      kicker: "Hall of fame",
+      title: "Roll-call legends",
+      lead: "The most loyal attendees of TU1B's streams. Is your name here?",
+      boards: "streams",
+      find: "Find your name",
+      empty: "The board fills up once roll-call boards are added.",
+      ranks: ["1st", "2nd", "3rd"],
     },
     footer: { rights: "All rights reserved", by: "Designed & built by", top: "Back to top" },
     lang: "العربية",
