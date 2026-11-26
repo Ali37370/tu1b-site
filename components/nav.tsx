@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Languages, Menu, Play, Volume2, VolumeX, X } from "lucide-react";
 import { loadSfxPref, setSfx, wireSfx } from "@/lib/sfx";
+import { InstallApp } from "./install";
 import { site } from "@/lib/site";
 import { useLang, useLive } from "./providers";
 
@@ -59,6 +60,7 @@ export function Nav() {
             </li>
           </ul>
           <div className="flex items-center gap-2">
+            <InstallApp />
             <button onClick={toggleSound} className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-white/5 text-zinc-200 transition hover:border-primary hover:text-white" aria-label={sound ? t.sfx.off : t.sfx.on} aria-pressed={sound} title={sound ? t.sfx.off : t.sfx.on}>
               {sound ? <Volume2 className="h-4 w-4" aria-hidden /> : <VolumeX className="h-4 w-4" aria-hidden />}
             </button>

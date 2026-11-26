@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   },
   twitter: { card: "summary_large_image", title: `${site.name} — ${site.nameAr}`, description: site.intro.ar },
   robots: { index: true, follow: true },
+  applicationName: site.name,
+  appleWebApp: { capable: true, title: site.name, statusBarStyle: "black-translucent" },
+  formatDetection: { telephone: false },
 };
 
 export const viewport: Viewport = { themeColor: "#07060b", colorScheme: "dark", width: "device-width", initialScale: 1 };
