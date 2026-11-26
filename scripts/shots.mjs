@@ -96,23 +96,6 @@ for (const s of scenarios) {
   report.introGone = (await p.locator(".intro3d").count()) === 0;
   await c.close();
 }
-// app manifest + offline page + service worker file
-{
-  const c = await b.newContext({ viewport: { width: 390, height: 844 } });
-  const p = await c.newPage();
-  await p.goto(BASE + "/", { waitUntil: "load" });
-  report.app = await p.evaluate(async () => {
-    const link = document.querySelector('link[rel="manifest"]');
-    const m = link ? await fetch(link.getAttribute("href")).then((r) => r.json()) : null;
-    const sw = await fetch("/sw.js").then((r) => r.status);
-    const off = await fetch("/offline.html").then((r) => r.status);
-    const icon = await fetch("/icons/maskable-512.png").then((r) => r.status);
-    return { manifest: m && { name: m.name, display: m.display, icons: m.icons.length, start: m.start_url }, sw, off, icon, installBtn: !!document.querySelector(".install-btn") };
-  });
-  await p.waitForTimeout(800);
-  await p.screenshot({ path: `${OUT}/app_header_m.png`, clip: { x: 0, y: 0, width: 390, height: 120 } });
-  await c.close();
-}
 // old features page still served
 const p2 = await (await b.newContext({ viewport: { width: 390, height: 844 } })).newPage();
 const res = await p2.goto(BASE + "/tahdeer.html");

@@ -62,6 +62,13 @@ export function Providers({ children }: { children: ReactNode }) {
   const [live, setLive] = useState<LiveState>(initialLive);
   const [data, setData] = useState<SiteData>({ schedule: site.schedule, clips: [], legends: [], boards: 0, loaded: false });
 
+  // the phone-app version was removed: clear any service worker a visitor installed before
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then((rs) => rs.forEach((r) => r.unregister())).catch(() => {});
+    }
+  }, []);
+
   useEffect(() => {
     try {
       const saved = localStorage.getItem("tu1b_lang");
